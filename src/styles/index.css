@@ -1,0 +1,35 @@
+@import './tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-cream text-ink font-body antialiased;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 { @apply font-display; line-height: 1.15; }
+  /* Visible keyboard focus everywhere (doc 2.5) */
+  :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center bg-maroon text-ink-light px-6 py-3 font-medium transition-colors hover:bg-ink;
+    border-radius: var(--radius-pill);
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center border border-maroon text-maroon px-6 py-3 font-medium transition-colors hover:bg-blush;
+    border-radius: var(--radius-pill);
+  }
+  .container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+}
