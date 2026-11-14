@@ -14,7 +14,7 @@ const links = [
 const iconBtn = 'p-2 hover:text-gold transition-colors'
 
 export default function Header() {
-  const { user, signOut } = useAuth()
+  const { user, profile, signOut } = useAuth()
   const { count, openCart } = useCart()
 
   return (
@@ -58,6 +58,9 @@ export default function Header() {
               </span>
             )}
           </button>
+          {['owner', 'order_manager'].includes(profile?.role) && (
+            <Link to="/admin/payments" className={`${iconBtn} text-sm`}>Admin</Link>
+          )}
           <Link to={user ? '/account/addresses' : '/auth'} className={iconBtn} aria-label={user ? 'My account' : 'Sign in'}>
             <User size={20} />
           </Link>

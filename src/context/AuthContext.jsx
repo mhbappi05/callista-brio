@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(isSupabaseConfigured)
   const userId = session?.user?.id ?? null
+  const [profileFor, setProfileFor] = useState(null)
 
   useEffect(() => {
     if (!supabase) return undefined
@@ -30,6 +31,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!supabase || !userId) {
       setProfile(null)
+      setProfileFor(null)
       return undefined
     }
     let active = true
@@ -39,12 +41,16 @@ export function AuthProvider({ children }) {
       .eq('id', userId)
       .maybeSingle()
       .then(({ data }) => {
-        if (active) setProfile(data)
+        if (!active) return
+        setProfile(data)
+        setProfileFor(userId)
       })
     return () => {
       active = false
     }
   }, [userId])
+
+  const profileLoading = Boolean(userId) && profileFor !== userId
 
   const signIn = useCallback(async (email, password) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -84,6 +90,7 @@ export function AuthProvider({ children }) {
     () => ({
       user: session?.user ?? null,
       profile,
+      profileLoading,
       loading,
       signIn,
       signUp,

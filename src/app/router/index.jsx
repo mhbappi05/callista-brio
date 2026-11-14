@@ -16,6 +16,8 @@ import Addresses from '@/pages/Account/Addresses.jsx'
 import NotFound from '@/pages/NotFound.jsx'
 import OrderConfirmation from '@/pages/OrderConfirmation.jsx'
 import TrackOrder from '@/pages/TrackOrder.jsx'
+import RequireRole from '@/components/common/RequireRole.jsx'
+import AdminPayments from '@/pages/admin/AdminPayments.jsx'
 
 export default function AppRouter() {
   return (
@@ -36,6 +38,9 @@ export default function AppRouter() {
         <Route path="*" element={<NotFound />} />
         <Route path="order-confirmation" element={<OrderConfirmation />} />
         <Route path="track" element={<TrackOrder />} />
+        <Route path="admin/payments" element={
+          <RequireRole roles={['owner', 'order_manager']}><AdminPayments /></RequireRole>
+        } />
       </Route>
     </Routes>
   )
