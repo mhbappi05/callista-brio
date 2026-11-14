@@ -60,6 +60,7 @@ export default function OrderConfirmation() {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link to="/track" className="btn-primary">Track this order</Link>
+        <Link to="/account/orders" className="btn-secondary">My orders</Link>
         <Link to="/shop" className="btn-secondary">Continue shopping</Link>
       </div>
     </section>

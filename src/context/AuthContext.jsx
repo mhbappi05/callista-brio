@@ -9,6 +9,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(isSupabaseConfigured)
   const userId = session?.user?.id ?? null
   const [profileFor, setProfileFor] = useState(null)
+  const [profileNonce, setProfileNonce] = useState(0)
+  const refreshProfile = useCallback(() => setProfileNonce((n) => n + 1), [])
 
   useEffect(() => {
     if (!supabase) return undefined
@@ -48,7 +50,7 @@ export function AuthProvider({ children }) {
     return () => {
       active = false
     }
-  }, [userId])
+  }, [userId, profileNonce])
 
   const profileLoading = Boolean(userId) && profileFor !== userId
 
@@ -97,8 +99,9 @@ export function AuthProvider({ children }) {
       signOut,
       sendPasswordReset,
       updatePassword,
+      refreshProfile,
     }),
-    [session, profile, loading, signIn, signUp, signOut, sendPasswordReset, updatePassword]
+    [session, profile, loading, signIn, signUp, signOut, sendPasswordReset, updatePassword, refreshProfile]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

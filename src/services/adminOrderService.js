@@ -64,13 +64,14 @@ export async function updateTracking(orderId, { courier, number, url }) {
 }
 
 export async function orderCounts() {
-    const [pending, inProgress, shipped, paymentsToReview] = await Promise.all([
+    const [pending, inProgress, shipped, paymentsToReview, returnsOpen] = await Promise.all([
         count('orders', (q) => q.eq('order_status', 'pending')),
         count('orders', (q) => q.in('order_status', ['confirmed', 'processing', 'packed'])),
         count('orders', (q) => q.eq('order_status', 'shipped')),
         count('payments', (q) => q.in('status', ['pending', 'requires_review'])),
+        count('return_requests', (q) => q.eq('status', 'requested')),
     ])
-    return { pending, inProgress, shipped, paymentsToReview }
+    return { pending, inProgress, shipped, paymentsToReview, returnsOpen }
 }
 
 export async function listCustomers(q = '') {
@@ -98,4 +99,23 @@ export async function listCustomerOrders(userId) {
         .limit(20)
     if (error) throw error
     return data
+}
+
+export async function listReturns(status) {
+    const { data, error } = await db()
+        .from('return_requests')
+        .select(`
+        id, order_id, request_type, reason, items, status, response_note, created_at,
+        order:orders(order_number, customer_name, customer_phone, order_items(id, product_name, variant_description, quantity))
+      `)
+        .eq('status', status)
+        .order('created_at', { ascending: false })
+        .limit(100)
+    if (error) throw error
+    return data
+}
+
+export async function updateReturn(id, status, note) {
+    const { error } = await db().rpc('admin_update_return', { p_id: id, p_status: status, p_note: note || null })
+    if (error) throw error
 }

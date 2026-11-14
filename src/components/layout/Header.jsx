@@ -1,7 +1,9 @@
-import { Link, NavLink } from 'react-router-dom'
-import { Search, Heart, ShoppingBag, User, LogOut } from 'lucide-react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Search, Heart, ShoppingBag, User, LogOut, Bell } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
+import { useAsync } from '@/hooks/useAsync'
+import { countUnread } from '@/services/accountService'
 
 const links = [
   { to: '/', label: 'Home', end: true },
@@ -16,6 +18,8 @@ const iconBtn = 'p-2 hover:text-gold transition-colors'
 export default function Header() {
   const { user, profile, signOut } = useAuth()
   const { count, openCart } = useCart()
+  const { pathname } = useLocation()
+  const unread = useAsync(() => (user ? countUnread(user.id) : Promise.resolve(0)), [user?.id, pathname])
 
   return (
     <header className="bg-maroon text-ink-light">
@@ -45,6 +49,15 @@ export default function Header() {
         <div className="flex items-center">
           <Link to="/shop" className={iconBtn} aria-label="Search"><Search size={20} /></Link>
           <Link to="/wishlist" className={iconBtn} aria-label="Wishlist"><Heart size={20} /></Link>
+          {user && (
+            <Link to="/account/notifications" className={`${iconBtn} relative`}
+              aria-label={`Notifications${unread.data ? `, ${unread.data} unread` : ''}`}>
+              <Bell size={20} />
+              {unread.data > 0 && (
+                <span aria-hidden="true" className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-xs font-semibold text-ink">{unread.data}</span>
+              )}
+            </Link>
+          )}
           <button
             type="button"
             onClick={openCart}

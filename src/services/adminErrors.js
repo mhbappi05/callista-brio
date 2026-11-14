@@ -14,6 +14,9 @@ const CODES = {
     single_fallback: 'Only one fallback zone is allowed. Turn it off on the other zone first.',
     FILE_TYPE: 'Use a JPG, PNG, WebP or AVIF image.',
     FILE_SIZE: 'Images must be 5 MB or smaller.',
+    invalid_return_state: 'That request can’t move to that step.',
+    return_not_found: 'That request no longer exists.',
+    invalid_window: 'Enter a return window between 1 and 90 days.',
 }
 
 export function adminErrorMessage(err) {

@@ -5,7 +5,7 @@ import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { getSettings, saveSetting } from '@/services/adminSettingsService'
 
-const KEYS = ['payment_methods', 'payment_instructions', 'announcement', 'store_contact']
+const KEYS = ['payment_methods', 'payment_instructions', 'announcement', 'store_contact', 'return_policy']
 
 function Section({ title, children, onSave, hint }) {
     const { busy, error, run } = useAction()
@@ -38,6 +38,8 @@ function Forms({ s }) {
     const [contact, setContact] = useState({
         email: s.store_contact?.email ?? '', phone: s.store_contact?.phone ?? '', whatsapp: s.store_contact?.whatsapp ?? '',
     })
+    const rp = s.return_policy ?? {}
+    const [ret, setRet] = useState({ enabled: !!rp.enabled, window_days: rp.window_days == null ? '' : String(rp.window_days) })
 
     return (
         <div className="mt-6 space-y-6">
@@ -50,6 +52,20 @@ function Forms({ s }) {
                 ))}
                 <label className="flex items-center gap-2 opacity-60">
                     <input type="checkbox" checked={!!pm.gateway} disabled /> Online payment gateway (available once a provider is set up)
+                </label>
+            </Section>
+
+            <Section title="Returns" hint="Decide your return policy first. Customers can only request a return on delivered orders, within this many days of delivery."
+                onSave={() => {
+                    const days = Number(ret.window_days)
+                    if (ret.enabled && !(Number.isInteger(days) && days >= 1 && days <= 90)) throw new Error('invalid_window')
+                    return saveSetting('return_policy', { enabled: ret.enabled, window_days: ret.window_days === '' ? null : days })
+                }}>
+                <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={ret.enabled} onChange={(e) => setRet({ ...ret, enabled: e.target.checked })} /> Accept return and exchange requests online
+                </label>
+                <label className="block">Return window (days after delivery)
+                    <input type="number" min="1" max="90" className={inputClass} value={ret.window_days} onChange={(e) => setRet({ ...ret, window_days: e.target.value })} />
                 </label>
             </Section>
 

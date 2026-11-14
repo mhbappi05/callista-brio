@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from '@/components/layout/Layout.jsx'
 import RequireAuth from '@/components/common/RequireAuth.jsx'
 import Home from '@/pages/Home.jsx'
@@ -31,6 +31,16 @@ import AdminCoupons from '@/pages/admin/AdminCoupons.jsx'
 import AdminSettings from '@/pages/admin/AdminSettings.jsx'
 import AdminDelivery from '@/pages/admin/AdminDelivery.jsx'
 import AdminCustomers from '@/pages/admin/AdminCustomers.jsx'
+import AccountLayout from '@/features/account/AccountLayout.jsx'
+import AccountOrders from '@/pages/Account/Orders.jsx'
+import AccountOrderDetail from '@/pages/Account/OrderDetail.jsx'
+import ReturnRequest from '@/pages/Account/ReturnRequest.jsx'
+import AccountReturns from '@/pages/Account/Returns.jsx'
+import AccountReviews from '@/pages/Account/Reviews.jsx'
+import ReviewForm from '@/pages/Account/ReviewForm.jsx'
+import AccountNotifications from '@/pages/Account/Notifications.jsx'
+import AccountProfile from '@/pages/Account/Profile.jsx'
+import AdminReturns from '@/pages/admin/AdminReturns.jsx'
 
 export default function AppRouter() {
   return (
@@ -47,7 +57,18 @@ export default function AppRouter() {
         <Route path="auth" element={<Auth />} />
         <Route path="auth/reset" element={<ResetPassword />} />
         <Route path="wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
-        <Route path="account/addresses" element={<RequireAuth><Addresses /></RequireAuth>} />
+        <Route path="account" element={<RequireAuth><AccountLayout /></RequireAuth>}>
+          <Route index element={<Navigate to="orders" replace />} />
+          <Route path="orders" element={<AccountOrders />} />
+          <Route path="orders/:id" element={<AccountOrderDetail />} />
+          <Route path="orders/:id/return" element={<ReturnRequest />} />
+          <Route path="returns" element={<AccountReturns />} />
+          <Route path="reviews" element={<AccountReviews />} />
+          <Route path="reviews/new" element={<ReviewForm />} />
+          <Route path="addresses" element={<Addresses />} />
+          <Route path="notifications" element={<AccountNotifications />} />
+          <Route path="profile" element={<AccountProfile />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
         <Route path="order-confirmation" element={<OrderConfirmation />} />
         <Route path="track" element={<TrackOrder />} />
@@ -69,6 +90,7 @@ export default function AppRouter() {
           <Route path="coupons" element={<RequireRole roles={OWNER}><AdminCoupons /></RequireRole>} />
           <Route path="delivery" element={<RequireRole roles={OWNER}><AdminDelivery /></RequireRole>} />
           <Route path="settings" element={<RequireRole roles={OWNER}><AdminSettings /></RequireRole>} />
+          <Route path="returns" element={<RequireRole roles={ORDER_ROLES}><AdminReturns /></RequireRole>} />
         </Route>
       </Route>
     </Routes>

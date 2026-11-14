@@ -6,6 +6,7 @@ const NAV = [
     { to: '/admin', label: 'Dashboard', end: true, roles: STAFF },
     { to: '/admin/orders', label: 'Orders', roles: ORDER_ROLES },
     { to: '/admin/payments', label: 'Payments', roles: ORDER_ROLES },
+    { to: '/admin/returns', label: 'Returns', roles: ORDER_ROLES },
     { to: '/admin/customers', label: 'Customers', roles: ORDER_ROLES },
     { to: '/admin/products', label: 'Products', roles: CATALOG_ROLES },
     { to: '/admin/categories', label: 'Categories', roles: CATALOG_ROLES },

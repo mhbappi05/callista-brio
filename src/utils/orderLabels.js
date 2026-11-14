@@ -37,3 +37,11 @@ export const NEXT_STATUSES = {
   delivered: [],
   cancelled: [],
 }
+
+export const RETURN_STATUS_LABELS = {
+  requested: 'Requested',
+  approved: 'Approved',
+  received: 'Item received',
+  completed: 'Completed',
+  rejected: 'Declined',
+}

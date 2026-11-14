@@ -30,7 +30,7 @@ export default function Addresses() {
   const list = data ?? []
 
   return (
-    <section className="container-page max-w-3xl py-10">
+    <section className="max-w-3xl">
       <h1 className="text-4xl text-maroon">Saved addresses</h1>
 
       {error ? <ErrorState error={error} onRetry={reload} />
