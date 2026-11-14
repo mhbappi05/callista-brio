@@ -19,6 +19,7 @@ export default function Footer() {
           <p className="font-display text-lg">Help</p>
           <ul className="mt-2 space-y-1 text-sm opacity-90">
             <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/track">Track an order</Link></li>
             <li><Link to="/policies/shipping">Delivery</Link></li>
             <li><Link to="/policies/returns">Returns</Link></li>
           </ul>

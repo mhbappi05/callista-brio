@@ -14,6 +14,8 @@ import ResetPassword from '@/pages/ResetPassword.jsx'
 import Wishlist from '@/pages/Wishlist.jsx'
 import Addresses from '@/pages/Account/Addresses.jsx'
 import NotFound from '@/pages/NotFound.jsx'
+import OrderConfirmation from '@/pages/OrderConfirmation.jsx'
+import TrackOrder from '@/pages/TrackOrder.jsx'
 
 export default function AppRouter() {
   return (
@@ -32,6 +34,8 @@ export default function AppRouter() {
         <Route path="wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
         <Route path="account/addresses" element={<RequireAuth><Addresses /></RequireAuth>} />
         <Route path="*" element={<NotFound />} />
+        <Route path="order-confirmation" element={<OrderConfirmation />} />
+        <Route path="track" element={<TrackOrder />} />
       </Route>
     </Routes>
   )
