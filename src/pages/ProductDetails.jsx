@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Heart, Minus, Plus, Star } from 'lucide-react'
 import PriceTag from '@/components/products/PriceTag.jsx'
 import ProductGrid from '@/components/products/ProductGrid.jsx'
@@ -13,6 +13,8 @@ import {
 import { formatBDT } from '@/utils/currency'
 import { sortImages } from '@/utils/images'
 import { getAvailableStock, isLowStock } from '@/utils/pricing'
+import { useCart } from '@/context/CartContext'
+import { useWishlist } from '@/context/WishlistContext'
 
 const MAX_QTY = 20
 
@@ -36,6 +38,10 @@ export default function ProductDetails() {
 }
 
 function ProductView({ product }) {
+  const cart = useCart()
+  const wishlist = useWishlist()
+  const navigate = useNavigate()
+  const saved = wishlist.has(product.id)
   const variants = (product.variants ?? []).filter((v) => v.is_active)
   const firstAvailable = variants.find((v) => v.stock_quantity > 0) ?? variants[0] ?? null
   const [variant, setVariant] = useState(product.has_variants ? firstAvailable : null)
@@ -53,12 +59,24 @@ function ProductView({ product }) {
     return 'In stock'
   }
 
-  // Cart and wishlist are built in Phase 4. These handlers are the hook-up points.
   function handleAddToCart() {
-    setNotice('The cart is coming in the next update, so this piece can’t be added yet.')
+    if (product.has_variants && !variant) {
+      setNotice('Please choose an option first.')
+      return
+    }
+    const added = cart.addItem({ productId: product.id, variantId: variant?.id ?? null, quantity: qty })
+    if (!added) return
+    setNotice('')
+    cart.openCart()
   }
-  function handleWishlist() {
-    setNotice('Wishlist is coming in the next update.')
+
+  async function handleWishlist() {
+    const result = await wishlist.toggle(product.id)
+    if (result === 'auth_required') {
+      navigate(`/auth?next=${encodeURIComponent(`/product/${product.slug}`)}`)
+    } else if (result === 'error') {
+      setNotice('We couldn’t update your wishlist. Please try again.')
+    }
   }
 
   return (
@@ -106,14 +124,15 @@ function ProductView({ product }) {
 
           <div className="mt-4 flex items-center gap-3">
             <div className="flex items-center border border-maroon/40" role="group" aria-label="Quantity">
-              <button type="button" className="p-3" aria-label="Decrease quantity"
-                disabled={qty <= 1 || soldOut} onClick={() => setQty((q) => Math.max(1, q - 1))}>
-                <Minus size={16} />
+              <button type="button" className="btn-primary flex-1 disabled:opacity-50"
+                disabled={soldOut || !cart.ready} onClick={handleAddToCart}>
+                {soldOut ? 'Sold out' : 'Add to cart'}
               </button>
               <span className="w-10 text-center" aria-live="polite">{qty}</span>
-              <button type="button" className="p-3" aria-label="Increase quantity"
-                disabled={qty >= maxQty || soldOut} onClick={() => setQty((q) => Math.min(maxQty, q + 1))}>
-                <Plus size={16} />
+              <button type="button" className="border border-maroon/40 p-3"
+                aria-label={saved ? 'Remove from wishlist' : 'Add to wishlist'} aria-pressed={saved}
+                onClick={handleWishlist}>
+                <Heart size={20} fill={saved ? 'currentColor' : 'none'} />
               </button>
             </div>
             <button type="button" className="btn-primary flex-1 disabled:opacity-50"

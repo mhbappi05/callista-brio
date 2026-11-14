@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import AnnouncementBar from './AnnouncementBar.jsx'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
+import CartDrawer from '@/components/cart/CartDrawer.jsx'
 
 export default function Layout() {
   return (
@@ -15,6 +16,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <CartDrawer />
     </div>
   )
 }

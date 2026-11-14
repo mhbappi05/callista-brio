@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from '@/components/layout/Layout.jsx'
+import RequireAuth from '@/components/common/RequireAuth.jsx'
 import Home from '@/pages/Home.jsx'
 import Shop from '@/pages/Shop.jsx'
 import Collections from '@/pages/Collections.jsx'
@@ -9,7 +10,9 @@ import Contact from '@/pages/Contact.jsx'
 import Cart from '@/pages/Cart.jsx'
 import Checkout from '@/pages/Checkout.jsx'
 import Auth from '@/pages/Auth.jsx'
-import ComingSoon from '@/pages/ComingSoon.jsx'
+import ResetPassword from '@/pages/ResetPassword.jsx'
+import Wishlist from '@/pages/Wishlist.jsx'
+import Addresses from '@/pages/Account/Addresses.jsx'
 import NotFound from '@/pages/NotFound.jsx'
 
 export default function AppRouter() {
@@ -22,10 +25,12 @@ export default function AppRouter() {
         <Route path="product/:slug" element={<ProductDetails />} />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
-        <Route path="wishlist" element={<ComingSoon title="Wishlist" />} />
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="auth" element={<Auth />} />
+        <Route path="auth/reset" element={<ResetPassword />} />
+        <Route path="wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
+        <Route path="account/addresses" element={<RequireAuth><Addresses /></RequireAuth>} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

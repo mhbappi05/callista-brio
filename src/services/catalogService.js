@@ -12,7 +12,7 @@ function unwrap({ data, error }) {
   return data
 }
 
-const CARD_SELECT = `
+export const CARD_SELECT = `
   id, name, slug, price, discount_price, has_variants, stock_quantity,
   low_stock_threshold, is_featured, created_at,
   images:product_images(storage_path, alt_text, is_primary, display_order),
@@ -165,4 +165,19 @@ export async function getPublicSetting(key) {
     await db().from('store_settings').select('value').eq('key', key).maybeSingle()
   )
   return data?.value ?? null
+}
+
+// Live data for cart lines. RLS returns only active products.
+export async function getProductsByIds(ids) {
+  if (!ids.length) return []
+  return unwrap(
+    await db()
+      .from('products')
+      .select(`
+        id, name, slug, price, discount_price, has_variants, stock_quantity, low_stock_threshold,
+        images:product_images(storage_path, alt_text, is_primary, display_order),
+        variants:product_variants(id, name, price, stock_quantity, is_active)
+      `)
+      .in('id', ids)
+  )
 }
