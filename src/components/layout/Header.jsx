@@ -58,8 +58,8 @@ export default function Header() {
               </span>
             )}
           </button>
-          {['owner', 'order_manager'].includes(profile?.role) && (
-            <Link to="/admin/payments" className={`${iconBtn} text-sm`}>Admin</Link>
+          {['owner', 'order_manager', 'catalog_manager'].includes(profile?.role) && (
+            <Link to="/admin" className={`${iconBtn} text-sm`}>Admin</Link>
           )}
           <Link to={user ? '/account/addresses' : '/auth'} className={iconBtn} aria-label={user ? 'My account' : 'Sign in'}>
             <User size={20} />

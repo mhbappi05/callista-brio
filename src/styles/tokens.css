@@ -13,4 +13,11 @@
   --radius-md: 10px;
   --radius-pill: 999px;
   --focus-ring: 0 0 0 3px var(--color-surface-cream), 0 0 0 5px var(--color-primary-maroon);
+
+  --rgb-maroon: 74 20 26;
+  --rgb-blush: 248 216 220;
+  --rgb-gold: 212 175 55;
+  --rgb-cream: 253 248 245;
+  --rgb-ink: 43 11 14;
+  --rgb-ink-light: 252 232 235;
 }

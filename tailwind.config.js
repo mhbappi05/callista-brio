@@ -4,12 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        maroon: 'var(--color-primary-maroon)',
-        blush: 'var(--color-secondary-blush)',
-        gold: 'var(--color-accent-gold)',
-        cream: 'var(--color-surface-cream)',
-        ink: 'var(--color-text-dark)',
-        'ink-light': 'var(--color-text-light)',
+        maroon: 'rgb(var(--rgb-maroon) / <alpha-value>)',
+        blush: 'rgb(var(--rgb-blush) / <alpha-value>)',
+        gold: 'rgb(var(--rgb-gold) / <alpha-value>)',
+        cream: 'rgb(var(--rgb-cream) / <alpha-value>)',
+        ink: 'rgb(var(--rgb-ink) / <alpha-value>)',
+        'ink-light': 'rgb(var(--rgb-ink-light) / <alpha-value>)',
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
