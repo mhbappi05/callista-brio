@@ -4,6 +4,7 @@ import { ErrorState } from '@/components/common/States.jsx'
 import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { getSettings, saveSetting } from '@/services/adminSettingsService'
+import { EMAIL_RE, cleanHandle } from '@/utils/contact'
 
 const POLICIES = [
     ['policy_about', 'About us', 'Your story: who makes the pieces, how, and what you stand for. It opens from “Read our story” on the Home page. If left blank, a short default is shown.'],
@@ -46,9 +47,16 @@ function Forms({ s }) {
         bkash_manual: s.payment_instructions?.bkash_manual ?? '', nagad_manual: s.payment_instructions?.nagad_manual ?? '',
     })
     const [ann, setAnn] = useState({ enabled: !!s.announcement?.enabled, text: s.announcement?.text ?? '' })
+    const ct = s.store_contact ?? {}
     const [contact, setContact] = useState({
-        email: s.store_contact?.email ?? '', phone: s.store_contact?.phone ?? '', whatsapp: s.store_contact?.whatsapp ?? '',
+        intro: ct.intro ?? '', email: ct.email ?? '', email_note: ct.email_note ?? '',
+        phone: ct.phone ?? '', phone_hours: ct.phone_hours ?? '',
+        whatsapp: ct.whatsapp ?? '', whatsapp_note: ct.whatsapp_note ?? '',
+        instagram: ct.instagram ?? '', facebook: ct.facebook ?? '',
+        location_title: ct.location_title ?? '', location_text: ct.location_text ?? '',
+        form_note: ct.form_note ?? '',
     })
+    const setC = (k) => (e) => setContact({ ...contact, [k]: e.target.value })
     const rp = s.return_policy ?? {}
     const [ret, setRet] = useState({ enabled: !!rp.enabled, window_days: rp.window_days == null ? '' : String(rp.window_days) })
     const [policies, setPolicies] = useState(() => Object.fromEntries(POLICIES.map(([key]) => [key, s[key]?.body ?? ''])))
@@ -109,13 +117,45 @@ function Forms({ s }) {
                 </label>
             </Section>
 
-            <Section title="Contact details" hint="Shown on the Contact page. Leave blank anything you don’t want to show."
-                onSave={() => saveSetting('store_contact', {
-                    email: contact.email.trim() || null, phone: contact.phone.trim() || null, whatsapp: contact.whatsapp.trim() || null,
-                })}>
-                <label className="block">Email<input type="email" className={inputClass} value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} /></label>
-                <label className="block">Phone<input className={inputClass} value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} /></label>
-                <label className="block">WhatsApp number<input className={inputClass} value={contact.whatsapp} onChange={(e) => setContact({ ...contact, whatsapp: e.target.value })} /></label>
+            <Section title="Contact page"
+                hint="Everything on the Contact page comes from here. Leave a field empty to hide that part. For phone numbers outside Bangladesh, include the country code, e.g. +44 20 7946 0958."
+                onSave={() => {
+                    const email = contact.email.trim()
+                    if (email && !EMAIL_RE.test(email)) throw new Error('invalid_email')
+                    const instagram = cleanHandle('instagram', contact.instagram)
+                    const facebook = cleanHandle('facebook', contact.facebook)
+                    if (instagram === null || facebook === null) throw new Error('invalid_handle')
+                    const t = (x) => x.trim() || null
+                    return saveSetting('store_contact', {
+                        intro: t(contact.intro),
+                        email: email || null, email_note: t(contact.email_note),
+                        phone: t(contact.phone), phone_hours: t(contact.phone_hours),
+                        whatsapp: t(contact.whatsapp), whatsapp_note: t(contact.whatsapp_note),
+                        instagram: instagram || null, facebook: facebook || null,
+                        location_title: t(contact.location_title), location_text: t(contact.location_text),
+                        form_note: t(contact.form_note),
+                    })
+                }}>
+                <label className="block">Intro line
+                    <input className={inputClass} maxLength={200} value={contact.intro} onChange={setC('intro')} />
+                </label>
+                <div className="grid gap-3 sm:grid-cols-2">
+                    <label className="block">Phone<input className={inputClass} value={contact.phone} onChange={setC('phone')} /></label>
+                    <label className="block">Phone note (hours)<input className={inputClass} maxLength={120} value={contact.phone_hours} onChange={setC('phone_hours')} placeholder="Sat–Thu, 10 AM – 8 PM" /></label>
+                    <label className="block">WhatsApp number<input className={inputClass} value={contact.whatsapp} onChange={setC('whatsapp')} /></label>
+                    <label className="block">WhatsApp note<input className={inputClass} maxLength={120} value={contact.whatsapp_note} onChange={setC('whatsapp_note')} /></label>
+                    <label className="block">Email<input type="email" className={inputClass} value={contact.email} onChange={setC('email')} /></label>
+                    <label className="block">Email note<input className={inputClass} maxLength={120} value={contact.email_note} onChange={setC('email_note')} /></label>
+                    <label className="block">Instagram<input className={inputClass} value={contact.instagram} onChange={setC('instagram')} placeholder="callistabrio" /></label>
+                    <label className="block">Facebook<input className={inputClass} value={contact.facebook} onChange={setC('facebook')} placeholder="callistabrio" /></label>
+                    <label className="block">Location heading<input className={inputClass} maxLength={80} value={contact.location_title} onChange={setC('location_title')} placeholder="Dhaka, Bangladesh" /></label>
+                </div>
+                <label className="block">Location text
+                    <textarea rows={3} maxLength={400} className={inputClass} value={contact.location_text} onChange={setC('location_text')} />
+                </label>
+                <label className="block">Note above the send button
+                    <input className={inputClass} maxLength={200} value={contact.form_note} onChange={setC('form_note')} />
+                </label>
             </Section>
 
             <Section title="Policy pages and FAQ"

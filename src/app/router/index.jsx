@@ -47,6 +47,7 @@ const AdminDelivery = lazy(() => import('@/pages/admin/AdminDelivery.jsx'))
 const AdminSettings = lazy(() => import('@/pages/admin/AdminSettings.jsx'))
 const AdminBanners = lazy(() => import('@/pages/admin/AdminBanners.jsx'))
 const AdminPassword = lazy(() => import('@/pages/admin/AdminPassword.jsx'))
+const AdminMessages = lazy(() => import('@/pages/admin/AdminMessages.jsx'))
 
 const guard = (roles, element) => <RequireRole roles={roles}>{element}</RequireRole>
 
@@ -102,6 +103,7 @@ export default function AppRouter() {
           <Route path="settings" element={guard(OWNER, <AdminSettings />)} />
           <Route path="banners" element={guard(CATALOG_ROLES, <AdminBanners />)} />
           <Route path="password" element={<AdminPassword />} />
+          <Route path="messages" element={guard(ORDER_ROLES, <AdminMessages />)} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

@@ -34,6 +34,7 @@ export default function AdminDashboard() {
                     <Card to="/admin/orders" label="New orders to confirm" value={orders.data?.pending} alert />
                     <Card to="/admin/orders" label="In progress (confirmed to packed)" value={orders.data?.inProgress} />
                     <Card to="/admin/orders" label="Shipped, not yet delivered" value={orders.data?.shipped} />
+                    <Card to="/admin/messages" label="New messages" value={orders.data?.newMessages} alert />
                     <Card to="/admin/payments" label="Payments to review" value={orders.data?.paymentsToReview} alert />
                     <Card to="/admin/returns" label="Return requests awaiting a reply" value={orders.data?.returnsOpen} alert />
                 </div>

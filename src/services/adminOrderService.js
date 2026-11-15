@@ -64,14 +64,15 @@ export async function updateTracking(orderId, { courier, number, url }) {
 }
 
 export async function orderCounts() {
-    const [pending, inProgress, shipped, paymentsToReview, returnsOpen] = await Promise.all([
+    const [pending, inProgress, shipped, paymentsToReview, returnsOpen, newMessages] = await Promise.all([
         count('orders', (q) => q.eq('order_status', 'pending')),
         count('orders', (q) => q.in('order_status', ['confirmed', 'processing', 'packed'])),
         count('orders', (q) => q.eq('order_status', 'shipped')),
         count('payments', (q) => q.in('status', ['pending', 'requires_review'])),
         count('return_requests', (q) => q.eq('status', 'requested')),
-    ])
-    return { pending, inProgress, shipped, paymentsToReview, returnsOpen }
+        count('contact_messages', (q) => q.eq('status', 'new')),
+      ])
+      return { pending, inProgress, shipped, paymentsToReview, returnsOpen, newMessages }
 }
 
 export async function listCustomers(q = '') {

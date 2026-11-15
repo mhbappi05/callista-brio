@@ -20,6 +20,9 @@ const CODES = {
   invalid_return_state: "That request can’t move to that step.",
   return_not_found: "That request no longer exists.",
   invalid_window: "Enter a return window between 1 and 90 days.",
+  invalid_email: "Enter a valid email address.",
+  invalid_handle:
+    "For Instagram and Facebook, enter just the account name (like callistabrio) or the full profile link.",
 };
 
 export function adminErrorMessage(err) {

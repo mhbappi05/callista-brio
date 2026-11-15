@@ -19,12 +19,19 @@ const iconBtn = 'tip icon-btn relative p-2.5 hover:text-gold'
 const badge = 'absolute right-0 top-0 min-w-5 rounded-full bg-gold px-1 text-center text-xs font-semibold text-ink badge-pop'
 
 export default function Header() {
-  const { user, profile, signOut } = useAuth()
+  const { user, profile, profileLoading, signOut } = useAuth()
   const { count, openCart } = useCart()
   const { pathname } = useLocation()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const unread = useAsync(() => (user ? countUnread(user.id) : Promise.resolve(0)), [user?.id, pathname])
   const isStaff = STAFF.includes(profile?.role)
+
+  // Hide customer-only icons for staff, and while a signed-in user's role is still loading (avoids a flash).
+  const customerUi = !isStaff && !(user && profileLoading)
+
+  const [menuOpen, setMenuOpen] = useState(false)
+  const unread = useAsync(
+    () => (user && customerUi ? countUnread(user.id) : Promise.resolve(0)),
+    [user?.id, customerUi, pathname]
+  )
 
   useEffect(() => {
     setMenuOpen(false)
@@ -66,10 +73,12 @@ export default function Header() {
           <Link to="/shop" className={iconBtn} data-tip="Search the shop" aria-label="Search">
             <Search size={20} />
           </Link>
-          <Link to="/wishlist" className={`${iconBtn} hidden sm:block`} data-tip="Your wishlist" aria-label="Wishlist">
-            <Heart size={20} />
-          </Link>
-          {user && (
+          {customerUi && (
+            <Link to="/wishlist" className={`${iconBtn} hidden sm:block`} data-tip="Your wishlist" aria-label="Wishlist">
+              <Heart size={20} />
+            </Link>
+          )}
+          {user && customerUi && (
             <Link to="/account/notifications" className={iconBtn} data-tip="Notifications"
               aria-label={`Notifications${unread.data ? `, ${unread.data} unread` : ''}`}>
               <Bell size={20} />
@@ -103,7 +112,7 @@ export default function Header() {
       {menuOpen && (
         <nav id="mobile-nav" aria-label="Mobile" className="border-t border-ink-light/20 md:hidden">
           <ul className="px-5 py-3 text-base">
-            {[...links, { to: '/wishlist', label: 'Wishlist' }].map((l) => (
+            {[...links, ...(customerUi ? [{ to: '/wishlist', label: 'Wishlist' }] : [])].map((l) => (
               <li key={l.to} className="py-2"><NavLink to={l.to} end={l.end} className={navClass}>{l.label}</NavLink></li>
             ))}
             {user && (
