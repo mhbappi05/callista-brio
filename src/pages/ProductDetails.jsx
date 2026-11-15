@@ -15,13 +15,22 @@ import { sortImages } from '@/utils/images'
 import { getAvailableStock, isLowStock } from '@/utils/pricing'
 import { useCart } from '@/context/CartContext'
 import { useWishlist } from '@/context/WishlistContext'
+import { usePageMeta } from '@/hooks/usePageMeta'
+import { siteUrl } from '@/lib/site'
+import { productMeta } from '@/utils/seo'
 
 const MAX_QTY = 20
 
 export default function ProductDetails() {
   const { slug } = useParams()
   const { data: product, error, loading, reload } = useAsync(() => getProductBySlug(slug), [slug])
-  useDocumentTitle(product?.name)
+  const meta = product
+    ? productMeta(product, {
+      siteUrl: siteUrl(),
+      imageUrls: sortImages(product.images).filter((i) => i.storage_path).map((i) => productImageUrl(i.storage_path)),
+    })
+    : { title: loading ? 'Loading…' : 'Product not found', noindex: !loading }
+  usePageMeta(meta)
 
   if (error) return <div className="container-page"><ErrorState error={error} onRetry={reload} /></div>
   if (loading && !product) return <div className="container-page py-16" aria-busy="true">Loading…</div>
@@ -135,14 +144,14 @@ function ProductView({ product }) {
                 <Heart size={20} fill={saved ? 'currentColor' : 'none'} />
               </button>
             </div>
-            <button type="button" className="btn-primary flex-1 disabled:opacity-50"
+            {/* <button type="button" className="btn-primary flex-1 disabled:opacity-50"
               disabled={soldOut} onClick={handleAddToCart}>
               {soldOut ? 'Sold out' : 'Add to cart'}
             </button>
             <button type="button" className="border border-maroon/40 p-3" aria-label="Add to wishlist"
               onClick={handleWishlist}>
               <Heart size={20} />
-            </button>
+            </button> */}
           </div>
           {notice && <p role="status" className="mt-3 text-sm">{notice}</p>}
 
@@ -183,7 +192,7 @@ function Gallery({ images, name }) {
         onClick={() => setZoom((z) => !z)} onMouseMove={zoom ? onMove : undefined}
         onMouseLeave={() => setZoom(false)}
         className={`block aspect-square w-full overflow-hidden bg-blush ${zoom ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}>
-        <img src={src} alt={current.alt_text || name}
+        <img src={src} alt={current.alt_text || name} fetchpriority="high" decoding="async"
           className="h-full w-full object-cover transition-transform duration-200"
           style={{ transform: zoom ? 'scale(2)' : 'scale(1)', transformOrigin: origin }} />
       </button>

@@ -1,7 +1,6 @@
-import { useEffect } from 'react'
+import { usePageMeta } from './usePageMeta'
 
-export function useDocumentTitle(title) {
-  useEffect(() => {
-    document.title = title ? `${title} | Callista Brio` : 'Callista Brio | Handcrafted jewelry'
-  }, [title])
+// useDocumentTitle('Shop')  or  useDocumentTitle('Shop', { description: '…' })
+export function useDocumentTitle(title, options = {}) {
+  usePageMeta({ title, ...options })
 }

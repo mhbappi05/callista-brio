@@ -1,46 +1,53 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { lazy } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from '@/components/layout/Layout.jsx'
 import RequireAuth from '@/components/common/RequireAuth.jsx'
+import RequireRole from '@/components/common/RequireRole.jsx'
+import { CATALOG_ROLES, ORDER_ROLES, OWNER, STAFF } from '@/features/admin/roles.js'
 import Home from '@/pages/Home.jsx'
 import Shop from '@/pages/Shop.jsx'
-import Collections from '@/pages/Collections.jsx'
 import ProductDetails from '@/pages/ProductDetails.jsx'
-import About from '@/pages/About.jsx'
-import Contact from '@/pages/Contact.jsx'
-import Cart from '@/pages/Cart.jsx'
-import Checkout from '@/pages/Checkout.jsx'
-import Auth from '@/pages/Auth.jsx'
-import ResetPassword from '@/pages/ResetPassword.jsx'
-import Wishlist from '@/pages/Wishlist.jsx'
-import Addresses from '@/pages/Account/Addresses.jsx'
 import NotFound from '@/pages/NotFound.jsx'
-import OrderConfirmation from '@/pages/OrderConfirmation.jsx'
-import TrackOrder from '@/pages/TrackOrder.jsx'
-import RequireRole from '@/components/common/RequireRole.jsx'
-import AdminPayments from '@/pages/admin/AdminPayments.jsx'
-import AdminLayout from '@/features/admin/AdminLayout.jsx'
-import { CATALOG_ROLES, ORDER_ROLES, OWNER, STAFF } from '@/features/admin/roles.js'
-import AdminDashboard from '@/pages/admin/AdminDashboard.jsx'
-import AdminOrders from '@/pages/admin/AdminOrders.jsx'
-import AdminOrderDetail from '@/pages/admin/AdminOrderDetail.jsx'
-import AdminProducts from '@/pages/admin/AdminProducts.jsx'
-import AdminProductEdit from '@/pages/admin/AdminProductEdit.jsx'
-import AdminTaxonomy from '@/pages/admin/AdminTaxonomy.jsx'
-import AdminReviews from '@/pages/admin/AdminReviews.jsx'
-import AdminCoupons from '@/pages/admin/AdminCoupons.jsx'
-import AdminSettings from '@/pages/admin/AdminSettings.jsx'
-import AdminDelivery from '@/pages/admin/AdminDelivery.jsx'
-import AdminCustomers from '@/pages/admin/AdminCustomers.jsx'
-import AccountLayout from '@/features/account/AccountLayout.jsx'
-import AccountOrders from '@/pages/Account/Orders.jsx'
-import AccountOrderDetail from '@/pages/Account/OrderDetail.jsx'
-import ReturnRequest from '@/pages/Account/ReturnRequest.jsx'
-import AccountReturns from '@/pages/Account/Returns.jsx'
-import AccountReviews from '@/pages/Account/Reviews.jsx'
-import ReviewForm from '@/pages/Account/ReviewForm.jsx'
-import AccountNotifications from '@/pages/Account/Notifications.jsx'
-import AccountProfile from '@/pages/Account/Profile.jsx'
-import AdminReturns from '@/pages/admin/AdminReturns.jsx'
+
+const Collections = lazy(() => import('@/pages/Collections.jsx'))
+const About = lazy(() => import('@/pages/About.jsx'))
+const Contact = lazy(() => import('@/pages/Contact.jsx'))
+const PolicyPage = lazy(() => import('@/pages/PolicyPage.jsx'))
+const Cart = lazy(() => import('@/pages/Cart.jsx'))
+const Checkout = lazy(() => import('@/pages/Checkout.jsx'))
+const OrderConfirmation = lazy(() => import('@/pages/OrderConfirmation.jsx'))
+const TrackOrder = lazy(() => import('@/pages/TrackOrder.jsx'))
+const Auth = lazy(() => import('@/pages/Auth.jsx'))
+const ResetPassword = lazy(() => import('@/pages/ResetPassword.jsx'))
+const Wishlist = lazy(() => import('@/pages/Wishlist.jsx'))
+
+const AccountLayout = lazy(() => import('@/features/account/AccountLayout.jsx'))
+const AccountOrders = lazy(() => import('@/pages/Account/Orders.jsx'))
+const AccountOrderDetail = lazy(() => import('@/pages/Account/OrderDetail.jsx'))
+const ReturnRequest = lazy(() => import('@/pages/Account/ReturnRequest.jsx'))
+const AccountReturns = lazy(() => import('@/pages/Account/Returns.jsx'))
+const AccountReviews = lazy(() => import('@/pages/Account/Reviews.jsx'))
+const ReviewForm = lazy(() => import('@/pages/Account/ReviewForm.jsx'))
+const Addresses = lazy(() => import('@/pages/Account/Addresses.jsx'))
+const AccountNotifications = lazy(() => import('@/pages/Account/Notifications.jsx'))
+const AccountProfile = lazy(() => import('@/pages/Account/Profile.jsx'))
+
+const AdminLayout = lazy(() => import('@/features/admin/AdminLayout.jsx'))
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard.jsx'))
+const AdminOrders = lazy(() => import('@/pages/admin/AdminOrders.jsx'))
+const AdminOrderDetail = lazy(() => import('@/pages/admin/AdminOrderDetail.jsx'))
+const AdminPayments = lazy(() => import('@/pages/admin/AdminPayments.jsx'))
+const AdminReturns = lazy(() => import('@/pages/admin/AdminReturns.jsx'))
+const AdminCustomers = lazy(() => import('@/pages/admin/AdminCustomers.jsx'))
+const AdminProducts = lazy(() => import('@/pages/admin/AdminProducts.jsx'))
+const AdminProductEdit = lazy(() => import('@/pages/admin/AdminProductEdit.jsx'))
+const AdminTaxonomy = lazy(() => import('@/pages/admin/AdminTaxonomy.jsx'))
+const AdminReviews = lazy(() => import('@/pages/admin/AdminReviews.jsx'))
+const AdminCoupons = lazy(() => import('@/pages/admin/AdminCoupons.jsx'))
+const AdminDelivery = lazy(() => import('@/pages/admin/AdminDelivery.jsx'))
+const AdminSettings = lazy(() => import('@/pages/admin/AdminSettings.jsx'))
+
+const guard = (roles, element) => <RequireRole roles={roles}>{element}</RequireRole>
 
 export default function AppRouter() {
   return (
@@ -48,15 +55,21 @@ export default function AppRouter() {
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="shop" element={<Shop />} />
-        <Route path="collections" element={<Collections />} />
         <Route path="product/:slug" element={<ProductDetails />} />
+        <Route path="collections" element={<Collections />} />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="faq" element={<PolicyPage slug="faq" />} />
+        <Route path="policies/:slug" element={<PolicyPage />} />
+
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />
+        <Route path="order-confirmation" element={<OrderConfirmation />} />
+        <Route path="track" element={<TrackOrder />} />
         <Route path="auth" element={<Auth />} />
         <Route path="auth/reset" element={<ResetPassword />} />
         <Route path="wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
+
         <Route path="account" element={<RequireAuth><AccountLayout /></RequireAuth>}>
           <Route index element={<Navigate to="orders" replace />} />
           <Route path="orders" element={<AccountOrders />} />
@@ -69,29 +82,26 @@ export default function AppRouter() {
           <Route path="notifications" element={<AccountNotifications />} />
           <Route path="profile" element={<AccountProfile />} />
         </Route>
-        <Route path="*" element={<NotFound />} />
-        <Route path="order-confirmation" element={<OrderConfirmation />} />
-        <Route path="track" element={<TrackOrder />} />
-        <Route path="admin/payments" element={
-          <RequireRole roles={['owner', 'order_manager']}><AdminPayments /></RequireRole>
-        } />
-        <Route path="admin" element={<RequireRole roles={STAFF}><AdminLayout /></RequireRole>}>
+
+        <Route path="admin" element={guard(STAFF, <AdminLayout />)}>
           <Route index element={<AdminDashboard />} />
-          <Route path="orders" element={<RequireRole roles={ORDER_ROLES}><AdminOrders /></RequireRole>} />
-          <Route path="orders/:id" element={<RequireRole roles={ORDER_ROLES}><AdminOrderDetail /></RequireRole>} />
-          <Route path="payments" element={<RequireRole roles={ORDER_ROLES}><AdminPayments /></RequireRole>} />
-          <Route path="customers" element={<RequireRole roles={ORDER_ROLES}><AdminCustomers /></RequireRole>} />
-          <Route path="products" element={<RequireRole roles={CATALOG_ROLES}><AdminProducts /></RequireRole>} />
-          <Route path="products/new" element={<RequireRole roles={CATALOG_ROLES}><AdminProductEdit /></RequireRole>} />
-          <Route path="products/:id" element={<RequireRole roles={CATALOG_ROLES}><AdminProductEdit /></RequireRole>} />
-          <Route path="categories" element={<RequireRole roles={CATALOG_ROLES}><AdminTaxonomy table="categories" /></RequireRole>} />
-          <Route path="collections" element={<RequireRole roles={CATALOG_ROLES}><AdminTaxonomy table="collections" /></RequireRole>} />
-          <Route path="reviews" element={<RequireRole roles={CATALOG_ROLES}><AdminReviews /></RequireRole>} />
-          <Route path="coupons" element={<RequireRole roles={OWNER}><AdminCoupons /></RequireRole>} />
-          <Route path="delivery" element={<RequireRole roles={OWNER}><AdminDelivery /></RequireRole>} />
-          <Route path="settings" element={<RequireRole roles={OWNER}><AdminSettings /></RequireRole>} />
-          <Route path="returns" element={<RequireRole roles={ORDER_ROLES}><AdminReturns /></RequireRole>} />
+          <Route path="orders" element={guard(ORDER_ROLES, <AdminOrders />)} />
+          <Route path="orders/:id" element={guard(ORDER_ROLES, <AdminOrderDetail />)} />
+          <Route path="payments" element={guard(ORDER_ROLES, <AdminPayments />)} />
+          <Route path="returns" element={guard(ORDER_ROLES, <AdminReturns />)} />
+          <Route path="customers" element={guard(ORDER_ROLES, <AdminCustomers />)} />
+          <Route path="products" element={guard(CATALOG_ROLES, <AdminProducts />)} />
+          <Route path="products/new" element={guard(CATALOG_ROLES, <AdminProductEdit />)} />
+          <Route path="products/:id" element={guard(CATALOG_ROLES, <AdminProductEdit />)} />
+          <Route path="categories" element={guard(CATALOG_ROLES, <AdminTaxonomy table="categories" />)} />
+          <Route path="collections" element={guard(CATALOG_ROLES, <AdminTaxonomy table="collections" />)} />
+          <Route path="reviews" element={guard(CATALOG_ROLES, <AdminReviews />)} />
+          <Route path="coupons" element={guard(OWNER, <AdminCoupons />)} />
+          <Route path="delivery" element={guard(OWNER, <AdminDelivery />)} />
+          <Route path="settings" element={guard(OWNER, <AdminSettings />)} />
         </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )

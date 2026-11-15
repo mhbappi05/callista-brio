@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
+import { clearCache } from '@/lib/cache'
 
 function db() {
     if (!supabase) throw new Error('SUPABASE_NOT_CONFIGURED')
@@ -29,6 +30,7 @@ export async function getSettings(keys) {
 export async function saveSetting(key, value) {
     const { error } = await db().from('store_settings').upsert({ key, value, is_public: true }, { onConflict: 'key' })
     if (error) throw error
+    clearCache()
 }
 
 // ----------------------------------------------------------------- zones
@@ -47,6 +49,7 @@ export async function saveZone(id, values) {
         }
         throw error
     }
+    clearCache()
 }
 
 // ------------------------------------------------------------------- roles

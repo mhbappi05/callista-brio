@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabaseClient'
+import { cached } from '@/lib/cache'
 
 export const PAGE_SIZE = 12
+const TTL = 60_000
 
 function db() {
   if (!supabase) throw new Error('SUPABASE_NOT_CONFIGURED')
@@ -104,30 +106,26 @@ export async function getRelatedProducts(product, limit = 4) {
   )
 }
 
-export async function getCollections() {
-  return unwrap(
-    await db()
-      .from('collections')
-      .select('id, name, slug, description, banner_path, is_featured')
-      .order('display_order')
+export const getCollections = () =>
+  cached('collections', TTL, async () =>
+    unwrap(await db().from('collections').select('id, name, slug, description, banner_path, is_featured').order('display_order'))
   )
-}
 
-export async function getCategories() {
-  return unwrap(
-    await db().from('categories').select('id, name, slug').order('display_order')
+export const getCategories = () =>
+  cached('categories', TTL, async () =>
+    unwrap(await db().from('categories').select('id, name, slug').order('display_order'))
   )
-}
 
-export async function getShopFilterOptions() {
-  const [categories, collections, materials] = await Promise.all([
-    db().from('categories').select('name, slug').order('display_order').then(unwrap),
-    db().from('collections').select('name, slug').order('display_order').then(unwrap),
-    db().from('products').select('material').then(unwrap),
-  ])
-  const distinct = [...new Set(materials.map((m) => m.material).filter(Boolean))].sort()
-  return { categories, collections, materials: distinct }
-}
+export const getShopFilterOptions = () =>
+  cached('filter-options', TTL, async () => {
+    const [categories, collections, materials] = await Promise.all([
+      db().from('categories').select('name, slug').order('display_order').then(unwrap),
+      db().from('collections').select('name, slug').order('display_order').then(unwrap),
+      db().from('products').select('material').then(unwrap),
+    ])
+    const distinct = [...new Set(materials.map((m) => m.material).filter(Boolean))].sort()
+    return { categories, collections, materials: distinct }
+  })
 
 export async function getProductReviews(productId, limit = 20) {
   return unwrap(
@@ -151,21 +149,16 @@ export async function getReviewStats(productId) {
   )
 }
 
-export async function getDeliveryZones() {
-  return unwrap(
-    await db()
-      .from('delivery_zones')
-      .select('code, name, fee, free_delivery_threshold')
-      .order('display_order')
+export const getDeliveryZones = () =>
+  cached('delivery-zones', TTL, async () =>
+    unwrap(await db().from('delivery_zones').select('code, name, fee, free_delivery_threshold').order('display_order'))
   )
-}
 
-export async function getPublicSetting(key) {
-  const data = unwrap(
-    await db().from('store_settings').select('value').eq('key', key).maybeSingle()
-  )
-  return data?.value ?? null
-}
+export const getPublicSetting = (key) =>
+  cached(`setting:${key}`, TTL, async () => {
+    const data = unwrap(await db().from('store_settings').select('value').eq('key', key).maybeSingle())
+    return data?.value ?? null
+  })
 
 // Live data for cart lines. RLS returns only active products.
 export async function getProductsByIds(ids) {

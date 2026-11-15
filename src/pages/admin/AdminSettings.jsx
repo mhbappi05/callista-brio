@@ -5,7 +5,17 @@ import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { getSettings, saveSetting } from '@/services/adminSettingsService'
 
-const KEYS = ['payment_methods', 'payment_instructions', 'announcement', 'store_contact', 'return_policy']
+const POLICIES = [
+    ['policy_shipping', 'Shipping and delivery', 'Cover: delivery areas, charges, timelines, courier, and what happens if a parcel is delayed or can’t be delivered.'],
+    ['policy_returns', 'Returns, exchanges and refunds', 'Cover: who can return, the time limit, item condition, how to request, how and when refunds are paid.'],
+    ['policy_privacy', 'Privacy policy', 'Cover: what data you collect and why, who processes it (hosting, couriers, payment providers), how long you keep it, how customers can ask for access or deletion.'],
+    ['policy_terms', 'Terms and conditions', 'Cover: ordering and pricing, payment, delivery, returns, liability, governing law, contact details.'],
+    ['policy_faq', 'FAQ', 'The questions customers ask most. Use “# Question” as a heading line, then the answer below it.'],
+]
+const KEYS = [
+    'payment_methods', 'payment_instructions', 'announcement', 'store_contact', 'return_policy',
+    ...POLICIES.map(([key]) => key),
+]
 
 function Section({ title, children, onSave, hint }) {
     const { busy, error, run } = useAction()
@@ -40,6 +50,7 @@ function Forms({ s }) {
     })
     const rp = s.return_policy ?? {}
     const [ret, setRet] = useState({ enabled: !!rp.enabled, window_days: rp.window_days == null ? '' : String(rp.window_days) })
+    const [policies, setPolicies] = useState(() => Object.fromEntries(POLICIES.map(([key]) => [key, s[key]?.body ?? ''])))
 
     return (
         <div className="mt-6 space-y-6">
@@ -93,6 +104,19 @@ function Forms({ s }) {
                 <label className="block">Email<input type="email" className={inputClass} value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} /></label>
                 <label className="block">Phone<input className={inputClass} value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} /></label>
                 <label className="block">WhatsApp number<input className={inputClass} value={contact.whatsapp} onChange={(e) => setContact({ ...contact, whatsapp: e.target.value })} /></label>
+            </Section>
+
+            <Section title="Policy pages and FAQ"
+                hint="Shown publicly exactly as written, so use wording you or your legal adviser have approved. Formatting: “# Heading”, “## Subheading”, “- list item”, and a blank line between paragraphs. No HTML."
+                onSave={() => Promise.all(POLICIES.map(([key]) => saveSetting(key, { body: policies[key].trim() })))}>
+                {POLICIES.map(([key, label, outline]) => (
+                    <label key={key} className="block">
+                        <span className="font-medium">{label}</span>
+                        <span className="block text-xs opacity-70">{outline}</span>
+                        <textarea rows={8} maxLength={20000} className={inputClass} value={policies[key]}
+                            onChange={(e) => setPolicies({ ...policies, [key]: e.target.value })} />
+                    </label>
+                ))}
             </Section>
         </div>
     )
