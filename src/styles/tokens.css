@@ -3,8 +3,16 @@
   --color-secondary-blush: #f8d8dc;
   --color-accent-gold: #d4af37;
   --color-surface-cream: #fdf8f5;
+  --color-page-bg: #f1e2de;
   --color-text-dark: #2b0b0e;
   --color-text-light: #fce8eb;
+
+  --rgb-maroon: 74 20 26;
+  --rgb-blush: 248 216 220;
+  --rgb-gold: 212 175 55;
+  --rgb-cream: 253 248 245;
+  --rgb-ink: 43 11 14;
+  --rgb-ink-light: 252 232 235;
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -13,11 +21,4 @@
   --radius-md: 10px;
   --radius-pill: 999px;
   --focus-ring: 0 0 0 3px var(--color-surface-cream), 0 0 0 5px var(--color-primary-maroon);
-
-  --rgb-maroon: 74 20 26;
-  --rgb-blush: 248 216 220;
-  --rgb-gold: 212 175 55;
-  --rgb-cream: 253 248 245;
-  --rgb-ink: 43 11 14;
-  --rgb-ink-light: 252 232 235;
 }

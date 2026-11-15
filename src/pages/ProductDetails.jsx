@@ -18,6 +18,7 @@ import { useWishlist } from '@/context/WishlistContext'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { siteUrl } from '@/lib/site'
 import { productMeta } from '@/utils/seo'
+import { flyToCart } from '@/lib/flyToCart'
 
 const MAX_QTY = 20
 
@@ -68,7 +69,7 @@ function ProductView({ product }) {
     return 'In stock'
   }
 
-  function handleAddToCart() {
+  async function handleAddToCart() {
     if (product.has_variants && !variant) {
       setNotice('Please choose an option first.')
       return
@@ -76,6 +77,8 @@ function ProductView({ product }) {
     const added = cart.addItem({ productId: product.id, variantId: variant?.id ?? null, quantity: qty })
     if (!added) return
     setNotice('')
+    const img = document.querySelector('[data-fly-source]')
+    await flyToCart({ from: img, src: img?.currentSrc || img?.src })
     cart.openCart()
   }
 
@@ -192,7 +195,7 @@ function Gallery({ images, name }) {
         onClick={() => setZoom((z) => !z)} onMouseMove={zoom ? onMove : undefined}
         onMouseLeave={() => setZoom(false)}
         className={`block aspect-square w-full overflow-hidden bg-blush ${zoom ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}>
-        <img src={src} alt={current.alt_text || name} fetchpriority="high" decoding="async"
+        <img src={src} alt={current.alt_text || name} data-fly-source fetchpriority="high" decoding="async"
           className="h-full w-full object-cover transition-transform duration-200"
           style={{ transform: zoom ? 'scale(2)' : 'scale(1)', transformOrigin: origin }} />
       </button>

@@ -61,7 +61,7 @@ export default function AdminCustomers() {
                 : loading && !data ? <p className="mt-4" aria-busy="true">Loading…</p>
                     : !data?.length ? <p className="mt-4">No customers found.</p>
                         : (
-                            <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-4 divide-y divide-maroon/15 float-card">
                                 {data.map((c) => (
                                     <li key={c.id} className="p-4 text-sm">
                                         <div className="flex flex-wrap items-center justify-between gap-3">

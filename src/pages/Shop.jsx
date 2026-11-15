@@ -92,7 +92,7 @@ export default function Shop() {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[16rem_1fr]">
         <aside>
-          <details className="border border-maroon/20 p-4 lg:hidden">
+          <details className="float-card p-4 lg:hidden">
             <summary className="cursor-pointer font-medium">Filters</summary>
             <div className="mt-4"><FiltersPanel options={options.data} filters={filters} onChange={update} /></div>
           </details>

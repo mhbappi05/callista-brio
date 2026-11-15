@@ -26,7 +26,7 @@ export default function Cart() {
       <h1 className="text-4xl text-maroon">Your cart</h1>
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_22rem]">
         <ul>{items.map((item) => <CartLineItem key={item.key} item={item} />)}</ul>
-        <aside className="h-fit border border-maroon/20 p-5"><CartSummary /></aside>
+        <aside className="h-fit float-card p-5"><CartSummary /></aside>
       </div>
     </section>
   )

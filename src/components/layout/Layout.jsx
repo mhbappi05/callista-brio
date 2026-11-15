@@ -12,8 +12,7 @@ export default function Layout() {
   const mainRef = useRef(null)
   const firstRender = useRef(true)
 
-  // On navigation: scroll to the top and move focus to the page content, so
-  // keyboard and screen-reader users start at the new page, not the old header.
+  // On navigation: scroll to the top and move focus to the page content.
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false
@@ -30,11 +29,18 @@ export default function Layout() {
       </a>
       <AnnouncementBar />
       <Header />
-      <main id="main" ref={mainRef} tabIndex={-1} className="flex-1 outline-none focus-visible:!shadow-none">
+      <main
+        id="main"
+        ref={mainRef}
+        tabIndex={-1}
+        className="frame page-sheet mb-6 mt-4 flex-1 outline-none focus-visible:!shadow-none"
+      >
         <ErrorBoundary key={pathname}>
-          <Suspense fallback={<PageLoader />}>
-            <Outlet />
-          </Suspense>
+          <div className="page-enter">
+            <Suspense fallback={<PageLoader />}>
+              <Outlet />
+            </Suspense>
+          </div>
         </ErrorBoundary>
       </main>
       <Footer />

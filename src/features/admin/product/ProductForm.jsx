@@ -104,7 +104,7 @@ export default function ProductForm({ product, categories, collections, onSaved 
     const aria = (k) => ({ 'aria-invalid': !!errors[k], 'aria-describedby': errors[k] ? `pf-${k}-error` : undefined })
 
     return (
-        <form onSubmit={submit} noValidate className="grid gap-4 border border-maroon/20 p-4 sm:grid-cols-2">
+        <form onSubmit={submit} noValidate className="grid gap-4 float-card p-4 sm:grid-cols-2">
             <h2 className="font-display text-2xl text-maroon sm:col-span-2">Product details</h2>
 
             <Field id="pf-name" label="Name *" error={errors.name}>

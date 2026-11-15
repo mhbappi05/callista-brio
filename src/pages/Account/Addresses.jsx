@@ -46,7 +46,7 @@ export default function Addresses() {
 
             <ul className="mt-6 space-y-4">
               {list.map((a) => (
-                <li key={a.id} className="border border-maroon/20 p-4">
+                <li key={a.id} className="float-card p-4">
                   {editing === a.id ? (
                     <AddressForm initial={a} submitLabel="Update address"
                       onCancel={() => setEditing(null)}
@@ -75,7 +75,7 @@ export default function Addresses() {
             </ul>
 
             {editing === 'new' ? (
-              <div className="mt-6 border border-maroon/20 p-4">
+              <div className="mt-6 float-card p-4">
                 <h2 className="mb-4 text-2xl text-maroon">New address</h2>
                 <AddressForm initial={{ is_default: list.length === 0 }} onCancel={() => setEditing(null)}
                   onSubmit={(values) => run(() => createAddress(user.id, values))} />

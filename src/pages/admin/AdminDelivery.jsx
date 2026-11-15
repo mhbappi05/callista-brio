@@ -89,13 +89,13 @@ export default function AdminDelivery() {
             </PageHeader>
             <p className="mt-2 text-sm">Checkout uses the first active zone that lists the customer’s district, otherwise the fallback zone. Without a fallback zone, unlisted districts can’t order.</p>
 
-            {editing === 'new' && <div className="mt-4 border border-maroon/20 p-4"><ZoneForm onDone={done} onCancel={() => setEditing(null)} /></div>}
+            {editing === 'new' && <div className="mt-4 float-card p-4"><ZoneForm onDone={done} onCancel={() => setEditing(null)} /></div>}
 
             {error ? <ErrorState error={error} onRetry={reload} />
                 : loading && !data ? <p className="mt-4" aria-busy="true">Loading…</p>
                     : !data?.length ? <p className="mt-4 text-maroon">No zones yet. Customers can’t check out until you add at least one.</p>
                         : (
-                            <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-4 divide-y divide-maroon/15 float-card">
                                 {data.map((z) => (
                                     <li key={z.id} className="p-4 text-sm">
                                         {editing === z.id ? <ZoneForm zone={z} onDone={done} onCancel={() => setEditing(null)} /> : (

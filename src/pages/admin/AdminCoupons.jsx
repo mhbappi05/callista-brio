@@ -112,13 +112,13 @@ export default function AdminCoupons() {
             <p className="mt-2 text-sm">Coupons are checked and applied by the server at checkout. Deactivate instead of deleting, to keep usage history.</p>
             <div className="mt-2"><ErrorLine message={toggle.error} /></div>
 
-            {editing === 'new' && <div className="mt-4 border border-maroon/20 p-4"><CouponForm onDone={done} onCancel={() => setEditing(null)} /></div>}
+            {editing === 'new' && <div className="mt-4 float-card p-4"><CouponForm onDone={done} onCancel={() => setEditing(null)} /></div>}
 
             {error ? <ErrorState error={error} onRetry={reload} />
                 : loading && !data ? <p className="mt-4" aria-busy="true">Loading…</p>
                     : !data?.length ? <p className="mt-4">No coupons yet.</p>
                         : (
-                            <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-4 divide-y divide-maroon/15 float-card">
                                 {data.map((c) => (
                                     <li key={c.id} className="p-4 text-sm">
                                         {editing === c.id ? <CouponForm coupon={c} onDone={done} onCancel={() => setEditing(null)} /> : (

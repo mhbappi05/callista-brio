@@ -35,7 +35,7 @@ export default function Notifications() {
                 : loading && !data ? <p className="mt-4" aria-busy="true">Loading…</p>
                     : !data?.length ? <p className="mt-4">No notifications yet.</p>
                         : (
-                            <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-4 divide-y divide-maroon/15 float-card">
                                 {data.map((n) => {
                                     const orderId = n.data?.order_id
                                     const link = n.type === 'return_requested' || n.type === 'return_update' || orderId ? `/account/orders/${orderId}` : null

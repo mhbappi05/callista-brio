@@ -27,7 +27,7 @@ function Section({ title, children, onSave, hint }) {
         if (r.ok) setSaved(true)
     }
     return (
-        <form onSubmit={submit} className="space-y-3 border border-maroon/20 p-4 text-sm" onChange={() => setSaved(false)}>
+        <form onSubmit={submit} className="space-y-3 float-card p-4 text-sm" onChange={() => setSaved(false)}>
             <h2 className="font-display text-2xl text-maroon">{title}</h2>
             {hint && <p className="opacity-80">{hint}</p>}
             {children}

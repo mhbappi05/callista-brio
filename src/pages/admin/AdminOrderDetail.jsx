@@ -62,7 +62,7 @@ function OrderView({ order, reload }) {
 
             <div className="mt-6 grid gap-6 lg:grid-cols-2">
                 <div className="space-y-6">
-                    <div className="border border-maroon/20 p-4">
+                    <div className="float-card p-4">
                         <p className="flex items-center gap-2">
                             Status: <Badge tone={order.order_status === 'cancelled' ? 'bad' : 'default'}>{ORDER_STATUS_LABELS[order.order_status]}</Badge>
                         </p>
@@ -90,7 +90,7 @@ function OrderView({ order, reload }) {
                         <ErrorLine message={status.error} />
                     </div>
 
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h2 className="font-display text-2xl text-maroon">Customer</h2>
                         <p className="mt-2">{order.customer_name}</p>
                         <p>{order.customer_phone}</p>
@@ -103,7 +103,7 @@ function OrderView({ order, reload }) {
                         {!order.user_id && <p className="mt-2 opacity-70">Guest order</p>}
                     </div>
 
-                    <form onSubmit={saveTracking} className="space-y-3 border border-maroon/20 p-4 text-sm">
+                    <form onSubmit={saveTracking} className="space-y-3 float-card p-4 text-sm">
                         <h2 className="font-display text-2xl text-maroon">Courier tracking</h2>
                         <label className="block">Courier
                             <input className={inputClass} value={track.courier} maxLength={80} onChange={(e) => setTrack({ ...track, courier: e.target.value })} />
@@ -121,7 +121,7 @@ function OrderView({ order, reload }) {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h2 className="font-display text-2xl text-maroon">Items</h2>
                         <ul className="mt-2 divide-y divide-maroon/15">
                             {order.order_items.map((it) => (
@@ -141,7 +141,7 @@ function OrderView({ order, reload }) {
                         </dl>
                     </div>
 
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h2 className="font-display text-2xl text-maroon">Payment</h2>
                         <p className="mt-2">
                             {PAYMENT_METHOD_LABELS[order.payment_method]} · <Badge tone={paymentTone(order.payment_status)}>{PAYMENT_STATUS_LABELS[order.payment_status]}</Badge>
@@ -154,7 +154,7 @@ function OrderView({ order, reload }) {
                         <Link to="/admin/payments" className="mt-2 inline-block underline">Verify, flag or refund in Payments</Link>
                     </div>
 
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h2 className="font-display text-2xl text-maroon">History</h2>
                         <ol className="mt-2 space-y-1">
                             {history.map((h) => (

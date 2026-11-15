@@ -343,7 +343,7 @@ export default function Checkout() {
         </div>
 
         {/* 5. Review */}
-        <aside className="h-fit border border-maroon/20 p-5 lg:sticky lg:top-6">
+        <aside className="h-fit float-card p-5 lg:sticky lg:top-24">
           <h2 className="font-display text-2xl text-maroon">5. Review your order</h2>
           <ul className="mt-4 divide-y divide-maroon/15">
             {cart.items.filter((i) => i.product && (i.status === 'ok' || i.status === 'limited')).map((i) => (

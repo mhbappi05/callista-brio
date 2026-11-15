@@ -23,7 +23,7 @@ export default function AdminLayout() {
 
     return (
         <div className="container-page grid gap-8 py-8 md:grid-cols-[13rem_1fr]">
-            <nav aria-label="Admin" className="md:sticky md:top-4 md:self-start">
+            <nav aria-label="Admin" className="md:sticky md:top-24 md:self-start">
                 <ul className="flex flex-wrap gap-2 md:flex-col md:gap-1">
                     {items.map((n) => (
                         <li key={n.to}>

@@ -93,7 +93,7 @@ function PaymentsTab() {
         : loading && !data ? <p className="mt-6" aria-busy="true">Loading…</p>
           : !data?.length ? <p className="mt-6">No payments match these filters.</p>
             : (
-              <ul className="mt-6 divide-y divide-maroon/15 border border-maroon/20">
+              <ul className="mt-6 divide-y divide-maroon/15 float-card">
                 {data.map((p) => (
                   <li key={p.id} className="p-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -189,7 +189,7 @@ function RefundsTab() {
     <>
       {msg && <p role="alert" className="mb-3 text-sm text-maroon">{msg}</p>}
       {!isOwner && <p className="mb-3 text-sm">Only the owner can approve or process refunds.</p>}
-      <ul className="divide-y divide-maroon/15 border border-maroon/20">
+      <ul className="divide-y divide-maroon/15 float-card">
         {data.map((r) => (
           <li key={r.id} className="flex flex-wrap items-start justify-between gap-3 p-4 text-sm">
             <div>

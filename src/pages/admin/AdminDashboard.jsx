@@ -49,7 +49,7 @@ export default function AdminDashboard() {
             {catalog.data?.lowStock.length > 0 && (
                 <div className="mt-8">
                     <h2 className="text-2xl text-maroon">Low stock</h2>
-                    <ul className="mt-3 divide-y divide-maroon/15 border border-maroon/20">
+                    <ul className="mt-3 divide-y divide-maroon/15 float-card">
                         {catalog.data.lowStock.slice(0, 15).map((p, i) => (
                             <li key={`${p.id}-${i}`} className="flex justify-between p-3 text-sm">
                                 <Link to={`/admin/products/${p.id}`} className="underline">{p.name}</Link>

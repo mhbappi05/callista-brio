@@ -20,7 +20,7 @@ export default function Returns() {
                         <EmptyState title="No requests" message="Requests you make from a delivered order appear here."
                             action={<Link to="/account/orders" className="btn-primary">My orders</Link>} />
                     ) : (
-                        <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                        <ul className="mt-4 divide-y divide-maroon/15 float-card">
                             {data.map((r) => (
                                 <li key={r.id} className="p-4 text-sm">
                                     <p className="font-medium">

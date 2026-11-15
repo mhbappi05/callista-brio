@@ -93,7 +93,7 @@ function ReturnForm({ order, policy }) {
 
                 <fieldset>
                     <legend className="text-sm font-medium">Which items?</legend>
-                    <ul className="mt-2 divide-y divide-maroon/15 border border-maroon/20">
+                    <ul className="mt-2 divide-y divide-maroon/15 float-card">
                         {order.order_items.filter((i) => i.product_id).map((item) => {
                             const selected = item.id in selection
                             return (

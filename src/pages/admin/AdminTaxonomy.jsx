@@ -115,13 +115,13 @@ export default function AdminTaxonomy({ table }) {
             <div className="mt-2"><ErrorLine message={toggle.error} /></div>
 
             {editing === 'new' && (
-                <div className="mt-4 border border-maroon/20 p-4"><TaxForm key="new" table={table} onDone={done} onCancel={() => setEditing(null)} /></div>
+                <div className="mt-4 float-card p-4"><TaxForm key="new" table={table} onDone={done} onCancel={() => setEditing(null)} /></div>
             )}
 
             {error ? <ErrorState error={error} onRetry={reload} />
                 : loading && !data ? <p className="mt-6" aria-busy="true">Loading…</p>
                     : (
-                        <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                        <ul className="mt-4 divide-y divide-maroon/15 float-card">
                             {data?.map((item) => (
                                 <li key={item.id} className="p-4 text-sm">
                                     {editing === item.id ? (

@@ -60,7 +60,7 @@ export default function StockPanel({ product, onChanged }) {
     }
 
     return (
-        <div className="border border-maroon/20 p-4">
+        <div className="float-card p-4">
             <h2 className="font-display text-2xl text-maroon">Stock</h2>
             <p className="text-sm">Every change is recorded below with who made it.</p>
 

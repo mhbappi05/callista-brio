@@ -15,6 +15,10 @@ export default {
         display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         body: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
+      boxShadow: {
+        float: '0 10px 30px -12px rgb(var(--rgb-maroon) / 0.28), 0 2px 8px rgb(var(--rgb-maroon) / 0.08)',
+        'float-lg': '0 22px 44px -14px rgb(var(--rgb-maroon) / 0.38), 0 4px 14px rgb(var(--rgb-maroon) / 0.12)',
+      },
     },
   },
   plugins: [],

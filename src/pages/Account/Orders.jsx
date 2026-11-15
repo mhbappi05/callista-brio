@@ -21,7 +21,7 @@ export default function Orders() {
                         <EmptyState title="No orders yet" message="When you place an order while signed in, it appears here."
                             action={<Link to="/shop" className="btn-primary">Browse the shop</Link>} />
                     ) : (
-                        <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                        <ul className="mt-4 divide-y divide-maroon/15 float-card">
                             {data.map((o) => (
                                 <li key={o.id}>
                                     <Link to={`/account/orders/${o.id}`} className="flex flex-wrap items-center justify-between gap-2 p-4 hover:bg-blush/40">

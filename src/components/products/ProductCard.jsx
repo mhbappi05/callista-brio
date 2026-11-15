@@ -18,14 +18,14 @@ export default function ProductCard({ product }) {
   const soldOut = isSoldOut(product)
 
   return (
-    <article className="group">
+    <article className="group float-card float-lift p-2">
       <Link to={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-blush">
+        <div className="relative aspect-square overflow-hidden rounded-xl bg-blush">
           <img
             src={productImageUrl(primary?.storage_path)}
             alt={primary?.alt_text || product.name}
             loading="lazy"
-            className={`h-full w-full object-cover ${soldOut ? 'opacity-70' : ''}`}
+            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${soldOut ? 'opacity-70' : ''}`}
           />
           {secondary && (
             <img
@@ -37,12 +37,12 @@ export default function ProductCard({ product }) {
           )}
           <ul className="absolute left-2 top-2 flex flex-col items-start gap-1">
             {getBadges(product).map((b) => (
-              <li key={b} className="bg-cream px-2 py-0.5 text-xs font-medium text-maroon">{b}</li>
+              <li key={b} className="rounded-full bg-cream px-2.5 py-0.5 text-xs font-medium text-maroon shadow-float">{b}</li>
             ))}
           </ul>
         </div>
-        <h3 className="mt-3 font-display text-xl text-ink">{product.name}</h3>
-        <PriceTag product={product} className="mt-1 text-sm" />
+        <h3 className="mt-3 px-1 font-display text-xl text-ink">{product.name}</h3>
+        <PriceTag product={product} className="mt-1 px-1 pb-1 text-sm" />
       </Link>
     </article>
   )

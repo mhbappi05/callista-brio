@@ -5,13 +5,24 @@
 
 @layer base {
   html { scroll-behavior: smooth; }
+
   body {
-    @apply bg-cream text-ink font-body antialiased;
+    @apply text-ink font-body antialiased;
     line-height: 1.6;
+    background-color: var(--color-page-bg);
+    background-image:
+      radial-gradient(60rem 30rem at 8% -5%, rgb(var(--rgb-blush) / 0.75), transparent),
+      radial-gradient(50rem 28rem at 100% 12%, rgb(var(--rgb-gold) / 0.16), transparent);
+    background-attachment: fixed;
   }
+
   h1, h2, h3, h4 { @apply font-display; line-height: 1.15; }
-  /* Visible keyboard focus everywhere (doc 2.5) */
+
+  /* Visible keyboard focus everywhere */
   :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
+
+  input, select, textarea { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {
@@ -19,17 +30,137 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+    .cb-stroke { animation: none; stroke-dashoffset: 0; }
   }
 }
 
 @layer components {
-  .btn-primary {
-    @apply inline-flex items-center justify-center bg-maroon text-ink-light px-6 py-3 font-medium transition-colors hover:bg-ink;
-    border-radius: var(--radius-pill);
+  /* ---------- floating layout ---------- */
+  .frame { margin-inline: 0.5rem; }
+  @media (min-width: 640px) { .frame { margin-inline: 1rem; } }
+  @media (min-width: 1500px) { .frame { margin-inline: auto; width: 100%; max-width: 88rem; } }
+
+  .page-sheet {
+    @apply rounded-[1.5rem] bg-cream shadow-float;
+    overflow: clip; /* clips rounded corners without breaking sticky children */
   }
+  @media (min-width: 1024px) { .page-sheet { border-radius: 2rem; } }
+
+  .float-card { @apply overflow-hidden rounded-2xl bg-white shadow-float; }
+  .float-lift { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease; }
+  .float-lift:hover { transform: translateY(-4px); @apply shadow-float-lg; }
+
+  .page-enter { animation: page-enter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+  /* ---------- buttons ---------- */
+  .btn-primary,
   .btn-secondary {
-    @apply inline-flex items-center justify-center border border-maroon text-maroon px-6 py-3 font-medium transition-colors hover:bg-blush;
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-medium;
+    overflow: hidden;
+    isolation: isolate;
     border-radius: var(--radius-pill);
+    transition: transform 0.2s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.25s ease,
+      background-color 0.2s ease, color 0.2s ease;
   }
+  .btn-primary { @apply bg-maroon text-ink-light; }
+  .btn-secondary { @apply border border-maroon text-maroon; }
+
+  /* light sweep across the button on hover */
+  .btn-primary::after,
+  .btn-secondary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+    transform: translateX(-130%);
+    transition: transform 0.7s ease;
+  }
+  .btn-primary:hover:not(:disabled),
+  .btn-secondary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -8px rgb(var(--rgb-maroon) / 0.5);
+  }
+  .btn-primary:hover:not(:disabled)::after,
+  .btn-secondary:hover:not(:disabled)::after { transform: translateX(130%); }
+  .btn-secondary:hover:not(:disabled) { @apply bg-blush; }
+  .btn-primary:hover:not(:disabled) { background-color: var(--color-text-dark); }
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled) { transform: translateY(0) scale(0.96); box-shadow: none; }
+  .btn-primary:disabled,
+  .btn-secondary:disabled { cursor: not-allowed; opacity: 0.5; }
+
   .container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+
+  /* ---------- header icons and tooltips ---------- */
+  .icon-btn { transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1), color 0.2s ease; }
+  .icon-btn:hover { transform: translateY(-2px) scale(1.12); }
+  .icon-btn:active { transform: scale(0.92); }
+
+  .tip { position: relative; }
+  .tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translate(-50%, -4px);
+    white-space: nowrap;
+    padding: 0.3rem 0.65rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    background: var(--color-text-dark);
+    color: var(--color-text-light);
+    box-shadow: 0 6px 16px rgb(0 0 0 / 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 60;
+  }
+  .tip:hover::after,
+  .tip:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+  /* keep the last icons' labels inside the screen */
+  .tip-end::after { left: auto; right: 0; transform: translate(0, -4px); }
+  .tip-end:hover::after,
+  .tip-end:focus-visible::after { transform: translate(0, 0); }
+  /* touch screens have no hover, so don't leave a label stuck after a tap */
+  @media (hover: none) { .tip:hover:not(:focus-visible)::after { opacity: 0; } }
+
+  .cart-bump { animation: cart-bump 0.5s ease; }
+  .badge-pop { animation: badge-pop 0.35s ease; }
+
+  /* ---------- CB loader ---------- */
+  .cb-stroke {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: cb-draw 2.4s ease-in-out infinite;
+  }
+  .cb-d1 { animation-delay: 0.15s; }
+  .cb-d2 { animation-delay: 0.3s; }
+  .cb-d3 { animation-delay: 0.45s; }
+  .cb-d4 { animation-delay: 0.7s; }
+}
+
+@keyframes cb-draw {
+  0% { stroke-dashoffset: 1; }
+  45%, 70% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cart-bump {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.35) rotate(-8deg); }
+  60% { transform: scale(0.95) rotate(6deg); }
+  100% { transform: scale(1); }
+}
+@keyframes badge-pop {
+  0% { transform: scale(0.4); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }

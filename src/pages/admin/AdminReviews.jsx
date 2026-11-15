@@ -35,7 +35,7 @@ export default function AdminReviews() {
                 : loading && !data ? <p className="mt-4" aria-busy="true">Loading…</p>
                     : !data?.length ? <p className="mt-4">Nothing here.</p>
                         : (
-                            <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-4 divide-y divide-maroon/15 float-card">
                                 {data.map((r) => (
                                     <li key={r.id} className="space-y-1 p-4 text-sm">
                                         <p>

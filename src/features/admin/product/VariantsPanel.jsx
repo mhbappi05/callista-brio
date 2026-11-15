@@ -65,7 +65,7 @@ export default function VariantsPanel({ product, onChanged }) {
 
     if (!product.has_variants) {
         return (
-            <div className="border border-maroon/20 p-4">
+            <div className="float-card p-4">
                 <h2 className="font-display text-2xl text-maroon">Options</h2>
                 <p className="mt-2 text-sm">This product has no options. To sell colours or sizes, tick “This product has options” above and save.</p>
             </div>
@@ -75,7 +75,7 @@ export default function VariantsPanel({ product, onChanged }) {
     const done = () => { setEditing(null); onChanged() }
 
     return (
-        <div className="border border-maroon/20 p-4">
+        <div className="float-card p-4">
             <h2 className="font-display text-2xl text-maroon">Options</h2>
             <ul className="mt-3 divide-y divide-maroon/15">
                 {product.variants.map((v) => (

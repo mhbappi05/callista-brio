@@ -38,13 +38,13 @@ export default function ImagesPanel({ product, onChanged }) {
     }
 
     return (
-        <div className="border border-maroon/20 p-4">
+        <div className="float-card p-4">
             <h2 className="font-display text-2xl text-maroon">Images</h2>
             <p className="text-sm">The first (primary) image is shown on product cards. JPG, PNG, WebP or AVIF, up to 5 MB.</p>
 
             <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {images.map((img) => (
-                    <li key={img.id} className="space-y-2 border border-maroon/20 p-2 text-sm">
+                    <li key={img.id} className="space-y-2 float-card p-2 text-sm">
                         <img src={productImageUrl(img.storage_path)} alt={img.alt_text} className="aspect-square w-full object-cover" />
                         {img.is_primary && <Badge tone="good">Primary</Badge>}
                         <label className="block">Alt text

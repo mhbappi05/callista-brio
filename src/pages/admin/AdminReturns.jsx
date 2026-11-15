@@ -48,7 +48,7 @@ export default function AdminReturns() {
                 : loading && !data ? <p className="mt-4" aria-busy="true">Loading…</p>
                     : !data?.length ? <p className="mt-4">Nothing here.</p>
                         : (
-                            <ul className="mt-4 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-4 divide-y divide-maroon/15 float-card">
                                 {data.map((r) => {
                                     const byId = new Map((r.order?.order_items ?? []).map((i) => [i.id, i]))
                                     return (

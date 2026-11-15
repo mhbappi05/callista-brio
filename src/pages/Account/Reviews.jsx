@@ -25,7 +25,7 @@ export default function Reviews() {
                 {!waiting.data ? <p className="mt-3" aria-busy="true">Loading…</p>
                     : !waiting.data.length ? <p className="mt-3 text-sm">Nothing to review right now. Delivered items you haven’t reviewed show up here.</p>
                         : (
-                            <ul className="mt-3 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-3 divide-y divide-maroon/15 float-card">
                                 {waiting.data.map((i) => (
                                     <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm">
                                         <span>{i.product_name}{i.variant_description ? ` (${i.variant_description})` : ''}
@@ -42,7 +42,7 @@ export default function Reviews() {
                 {!mine.data ? <p className="mt-3" aria-busy="true">Loading…</p>
                     : !mine.data.length ? <p className="mt-3 text-sm">You haven’t written any reviews yet.</p>
                         : (
-                            <ul className="mt-3 divide-y divide-maroon/15 border border-maroon/20">
+                            <ul className="mt-3 divide-y divide-maroon/15 float-card">
                                 {mine.data.map((r) => (
                                     <li key={r.id} className="p-3 text-sm">
                                         <p>

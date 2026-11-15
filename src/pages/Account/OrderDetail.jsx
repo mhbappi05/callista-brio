@@ -50,7 +50,7 @@ function OrderView({ order }) {
 
             <div className="mt-6 grid gap-6 lg:grid-cols-2">
                 <div className="space-y-6">
-                    <div className="border border-maroon/20 p-4">
+                    <div className="float-card p-4">
                         <h3 className="mb-3 font-display text-2xl text-maroon">Progress</h3>
                         <OrderTimeline status={order.order_status} history={history} />
                         {(order.courier_name || order.tracking_number) && (
@@ -62,14 +62,14 @@ function OrderView({ order }) {
                         )}
                     </div>
 
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h3 className="font-display text-2xl text-maroon">Delivery</h3>
                         <p className="mt-2">{addr.recipient_name} · {addr.phone}</p>
                         <p>{addr.address_line}, {addr.city_or_area}, {addr.district}{addr.postal_code ? ` ${addr.postal_code}` : ''}</p>
                         {addr.delivery_instructions && <p className="opacity-70">Instructions: {addr.delivery_instructions}</p>}
                     </div>
 
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h3 className="font-display text-2xl text-maroon">Payment</h3>
                         <p className="mt-2">{PAYMENT_METHOD_LABELS[order.payment_method]} · {PAYMENT_STATUS_LABELS[order.payment_status]}</p>
                         {order.refunds.map((r) => (
@@ -79,7 +79,7 @@ function OrderView({ order }) {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h3 className="font-display text-2xl text-maroon">Items</h3>
                         <ul className="mt-2 divide-y divide-maroon/15">
                             {order.order_items.map((it) => (
@@ -109,7 +109,7 @@ function OrderView({ order }) {
                         </dl>
                     </div>
 
-                    <div className="border border-maroon/20 p-4 text-sm">
+                    <div className="float-card p-4 text-sm">
                         <h3 className="font-display text-2xl text-maroon">Returns and exchanges</h3>
                         {order.returns.map((r) => (
                             <div key={r.id} className="mt-2 bg-blush/40 p-3">

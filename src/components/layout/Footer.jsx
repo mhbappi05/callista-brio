@@ -6,7 +6,7 @@ export default function Footer() {
   const { data: contact } = useAsync(() => getPublicSetting('store_contact'), [])
 
   return (
-    <footer className="bg-maroon text-ink-light">
+    <footer className="frame mb-4 rounded-3xl bg-maroon text-ink-light shadow-float-lg">
       <div className="container-page grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="font-display text-2xl">Callista Brio</p>
