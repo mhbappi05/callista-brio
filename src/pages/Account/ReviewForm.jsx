@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { ImagePlus, X } from 'lucide-react'
 import { EmptyState, ErrorState } from '@/components/common/States.jsx'
 import { useAuth } from '@/context/AuthContext'
 import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-import { accountErrorMessage, getReviewItem, submitReview } from '@/services/accountService'
+import { filterImageFiles, fitToLimit } from '@/lib/imageUpload'
+import { MAX_REVIEW_PHOTOS, accountErrorMessage, getReviewItem, submitReview } from '@/services/accountService'
 
 const input = 'mt-1 w-full border border-maroon/30 bg-cream px-3 py-2 text-sm'
 
@@ -35,8 +37,27 @@ function Form({ item, userId }) {
     const [rating, setRating] = useState(0)
     const [title, setTitle] = useState('')
     const [comment, setComment] = useState('')
+    const [files, setFiles] = useState([])
+    const [previews, setPreviews] = useState([])
+    const [photoNote, setPhotoNote] = useState('')
     const [error, setError] = useState('')
     const [busy, setBusy] = useState(false)
+
+    useEffect(() => {
+        const urls = files.map((f) => URL.createObjectURL(f))
+        setPreviews(urls)
+        return () => urls.forEach((u) => URL.revokeObjectURL(u))
+    }, [files])
+
+    function addPhotos(fileList) {
+        const { accepted, rejected } = filterImageFiles(fileList)
+        const { take, skipped } = fitToLimit(accepted, files.length, MAX_REVIEW_PHOTOS)
+        const notes = []
+        if (rejected.length) notes.push('Only JPG, PNG or WebP photos can be added.')
+        if (skipped) notes.push(`You can add up to ${MAX_REVIEW_PHOTOS} photos.`)
+        setPhotoNote(notes.join(' '))
+        if (take.length) setFiles((prev) => [...prev, ...take])
+    }
 
     async function submit(e) {
         e.preventDefault()
@@ -44,11 +65,14 @@ function Form({ item, userId }) {
         setBusy(true)
         setError('')
         try {
-            await submitReview(userId, {
+            const { failed } = await submitReview(userId, {
                 productId: item.product_id, orderItemId: item.id, rating,
-                title: title.trim(), comment: comment.trim(),
+                title: title.trim(), comment: comment.trim(), files,
             })
-            navigate('/account/reviews', { replace: true })
+            const flash = failed.length
+                ? `Your review was saved, but ${failed.length === 1 ? 'one photo' : `${failed.length} photos`} couldn’t be uploaded. It will be checked before it appears in the store.`
+                : 'Thank you! Your review will appear once we have checked it.'
+            navigate('/account/reviews', { replace: true, state: { flash } })
         } catch (err) {
             console.error(err)
             setError(accountErrorMessage(err))
@@ -82,8 +106,40 @@ function Form({ item, userId }) {
                     <label htmlFor="rv-comment" className="text-sm font-medium">Your review (optional)</label>
                     <textarea id="rv-comment" rows={5} maxLength={2000} className={input} value={comment} onChange={(e) => setComment(e.target.value)} />
                 </div>
+
+                <div>
+                    <p className="text-sm font-medium">Photos (optional, up to {MAX_REVIEW_PHOTOS})</p>
+                    {previews.length > 0 && (
+                        <ul className="mt-2 flex flex-wrap gap-3">
+                            {previews.map((url, i) => (
+                                <li key={url} className="relative">
+                                    <img src={url} alt={`Photo ${i + 1} to upload`} className="h-24 w-24 rounded-xl object-cover shadow-float" />
+                                    <button type="button" aria-label={`Remove photo ${i + 1}`} disabled={busy}
+                                        onClick={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                                        className="absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-maroon text-ink-light shadow-float">
+                                        <X size={14} aria-hidden="true" />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {files.length < MAX_REVIEW_PHOTOS && (
+                        <label className="btn-secondary mt-3 cursor-pointer gap-2 focus-within:ring-2 focus-within:ring-maroon">
+                            <ImagePlus size={16} aria-hidden="true" /> Add photos
+                            <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" disabled={busy}
+                                onChange={(e) => { addPhotos(e.target.files); e.target.value = '' }} />
+                        </label>
+                    )}
+                    {photoNote && <p role="status" className="mt-2 text-sm text-maroon">{photoNote}</p>}
+                    <p className="mt-2 text-xs opacity-80">
+                        Please share photos of the item only. Photos are resized automatically and checked before they appear in the store.
+                    </p>
+                </div>
+
                 {error && <p role="alert" className="text-sm text-maroon">{error}</p>}
-                <button type="submit" className="btn-primary" disabled={busy}>{busy ? 'Sending…' : 'Submit review'}</button>
+                <button type="submit" className="btn-primary" disabled={busy}>
+                    {busy ? (files.length ? 'Uploading…' : 'Sending…') : 'Submit review'}
+                </button>
             </form>
         </section>
     )

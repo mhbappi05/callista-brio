@@ -23,6 +23,8 @@ const CODES = {
   invalid_email: "Enter a valid email address.",
   invalid_handle:
     "For Instagram and Facebook, enter just the account name (like callistabrio) or the full profile link.",
+  invalid_image_list: "The photo list changed. Reload the page and try again.",
+  too_many_images: "A product can have up to 10 photos.",
 };
 
 export function adminErrorMessage(err) {

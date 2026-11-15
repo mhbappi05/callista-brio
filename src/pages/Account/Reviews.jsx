@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { ErrorState } from '@/components/common/States.jsx'
 import { useAuth } from '@/context/AuthContext'
 import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { listMyReviews, listReviewableItems } from '@/services/accountService'
 import { formatDhakaDate } from '@/utils/orderLabels'
+import { reviewImageUrl } from '@/lib/storageUrls'
 
 const STATUS = { pending: 'Awaiting moderation', approved: 'Published', rejected: 'Not published' }
 
@@ -13,6 +14,7 @@ export default function Reviews() {
     const { user } = useAuth()
     const waiting = useAsync(() => listReviewableItems(user.id), [user.id])
     const mine = useAsync(() => listMyReviews(user.id), [user.id])
+    const flash = useLocation().state?.flash
 
     if (waiting.error || mine.error) {
         return <ErrorState error={waiting.error || mine.error} onRetry={() => { waiting.reload(); mine.reload() }} />
@@ -20,6 +22,7 @@ export default function Reviews() {
 
     return (
         <section className="space-y-8">
+            {flash && <p role="status" className="rounded-xl bg-blush p-3 text-sm">{flash}</p>}
             <div>
                 <h2 className="text-3xl text-maroon">Waiting for your review</h2>
                 {!waiting.data ? <p className="mt-3" aria-busy="true">Loading…</p>
@@ -51,6 +54,15 @@ export default function Reviews() {
                                         </p>
                                         {r.title && <p className="font-medium">{r.title}</p>}
                                         {r.comment && <p>{r.comment}</p>}
+                                        {r.images?.length > 0 && (
+                                            <ul className="mt-2 flex gap-2">
+                                                {r.images.map((img) => (
+                                                    <li key={img.id}>
+                                                        <img src={reviewImageUrl(img.storage_path)} alt="Your photo" loading="lazy" className="h-14 w-14 rounded-lg object-cover" />
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </li>
                                 ))}
                             </ul>

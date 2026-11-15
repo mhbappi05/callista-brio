@@ -20,3 +20,6 @@ export const bannerImageUrl = (path) =>
 export { PLACEHOLDER as placeholderImage };
 export const homeBannerUrl = (path) =>
   path ? publicUrl("home-banners", path) : null;
+
+export const reviewImageUrl = (path) =>
+  path ? publicUrl("review-images", path) : null;

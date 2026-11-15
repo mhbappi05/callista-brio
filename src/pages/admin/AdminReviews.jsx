@@ -4,8 +4,9 @@ import { ErrorLine, PageHeader, smallBtn, useAction } from '@/features/admin/ui.
 import { ErrorState } from '@/components/common/States.jsx'
 import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-import { listReviews, moderateReview } from '@/services/adminCatalogService'
+import { listReviews, moderateReview, deleteReviewImage } from '@/services/adminCatalogService'
 import { formatDhakaDate } from '@/utils/orderLabels'
+import { reviewImageUrl } from '@/lib/storageUrls'
 
 const TABS = [['pending', 'Awaiting review'], ['approved', 'Approved'], ['rejected', 'Rejected']]
 
@@ -17,6 +18,12 @@ export default function AdminReviews() {
 
     async function moderate(id, status) {
         const r = await action.run(() => moderateReview(id, status))
+        if (r.ok) reload()
+    }
+
+    async function removePhoto(img) {
+        if (!window.confirm('Remove this photo? The review text is not affected.')) return
+        const r = await action.run(() => deleteReviewImage(img))
         if (r.ok) reload()
     }
 
@@ -46,6 +53,18 @@ export default function AdminReviews() {
                                         </p>
                                         {r.title && <p className="font-medium">{r.title}</p>}
                                         {r.comment && <p className="whitespace-pre-line">{r.comment}</p>}
+                                        {r.images?.length > 0 && (
+                                            <ul className="flex flex-wrap gap-3 pt-1">
+                                                {r.images.map((img) => (
+                                                    <li key={img.id} className="text-center text-xs">
+                                                        <a href={reviewImageUrl(img.storage_path)} target="_blank" rel="noopener noreferrer">
+                                                            <img src={reviewImageUrl(img.storage_path)} alt="Customer photo (opens full size)" className="h-20 w-20 rounded-lg object-cover shadow-float" />
+                                                        </a>
+                                                        <button type="button" className="mt-1 underline" disabled={action.busy} onClick={() => removePhoto(img)}>Remove photo</button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                         <div className="flex gap-2 pt-1">
                                             {r.status !== 'approved' && <button type="button" className={`btn-primary ${smallBtn}`} disabled={action.busy} onClick={() => moderate(r.id, 'approved')}>Approve</button>}
                                             {r.status !== 'rejected' && <button type="button" className={`btn-secondary ${smallBtn}`} disabled={action.busy} onClick={() => moderate(r.id, 'rejected')}>Reject</button>}

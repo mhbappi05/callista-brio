@@ -164,7 +164,7 @@ export async function getProductReviews(productId, limit = 20) {
   return unwrap(
     await db()
       .from("reviews")
-      .select("id, rating, title, comment, created_at, is_verified_purchase")
+      .select('id, rating, title, comment, created_at, is_verified_purchase, images:review_images(id, storage_path)')
       .eq("product_id", productId)
       .eq("status", "approved")
       .order("created_at", { ascending: false })

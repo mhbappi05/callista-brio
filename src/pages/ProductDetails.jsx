@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Heart, Minus, Plus, Star } from 'lucide-react'
 import PriceTag from '@/components/products/PriceTag.jsx'
@@ -6,7 +6,7 @@ import ProductGrid from '@/components/products/ProductGrid.jsx'
 import { EmptyState, ErrorState } from '@/components/common/States.jsx'
 import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-import { placeholderImage, productImageUrl } from '@/lib/storageUrls'
+import { placeholderImage, productImageUrl, reviewImageUrl } from '@/lib/storageUrls'
 import {
   getDeliveryZones, getProductBySlug, getProductReviews, getRelatedProducts, getReviewStats,
 } from '@/services/catalogService'
@@ -19,6 +19,8 @@ import { usePageMeta } from '@/hooks/usePageMeta'
 import { siteUrl } from '@/lib/site'
 import { productMeta } from '@/utils/seo'
 import { flyToCart } from '@/lib/flyToCart'
+import ImageLightbox from '@/components/common/ImageLightbox.jsx'
+
 
 const MAX_QTY = 20
 
@@ -280,6 +282,9 @@ function RatingSummary({ productId }) {
 
 function Reviews({ productId }) {
   const { data: reviews } = useAsync(() => getProductReviews(productId), [productId])
+  const [zoom, setZoom] = useState(null)
+  const closeZoom = useCallback(() => setZoom(null), [])
+
   if (!reviews?.length) return null
   return (
     <section className="mt-14">
@@ -290,6 +295,21 @@ function Reviews({ productId }) {
             <Stars value={r.rating} />
             {r.title && <p className="mt-1 font-medium">{r.title}</p>}
             {r.comment && <p className="mt-1">{r.comment}</p>}
+            {r.images?.length > 0 && (
+              <ul className="mt-2 flex flex-wrap gap-2">
+                {r.images.map((img) => {
+                  const url = reviewImageUrl(img.storage_path)
+                  return (
+                    <li key={img.id}>
+                      <button type="button" onClick={() => setZoom(url)} aria-label="View customer photo larger"
+                        className="block overflow-hidden rounded-xl shadow-float transition hover:-translate-y-0.5">
+                        <img src={url} alt="" loading="lazy" className="h-20 w-20 object-cover" />
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
             <p className="mt-1 text-xs opacity-70">
               {r.is_verified_purchase && 'Verified purchase · '}
               {new Date(r.created_at).toLocaleDateString('en-GB', { timeZone: 'Asia/Dhaka', dateStyle: 'medium' })}
@@ -297,6 +317,7 @@ function Reviews({ productId }) {
           </li>
         ))}
       </ul>
+      <ImageLightbox src={zoom} alt="Customer photo" onClose={closeZoom} />
     </section>
   )
 }
