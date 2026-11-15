@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import Field from '@/components/common/Field.jsx'
+import PasswordForm from '@/features/account/PasswordForm.jsx'
+import { STAFF } from '@/features/admin/roles.js'
 import { useAuth } from '@/context/AuthContext'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { updateProfile } from '@/services/accountService'
@@ -11,14 +14,15 @@ export default function Profile() {
     useDocumentTitle('My profile')
     const { user, profile, profileLoading, refreshProfile, updatePassword, signOut } = useAuth()
 
+    // Staff accounts only need to change their password.
+    if (STAFF.includes(profile?.role)) return <Navigate to="/admin/password" replace />
     if (profileLoading) return <p aria-busy="true">Loading…</p>
+
     return (
         <section className="max-w-xl space-y-10">
-            <DetailsForm key={profile?.full_name + profile?.phone} user={user} profile={profile} onSaved={refreshProfile} />
+            <DetailsForm key={`${profile?.full_name}|${profile?.phone}`} user={user} profile={profile} onSaved={refreshProfile} />
             <PasswordForm updatePassword={updatePassword} />
-            <div>
-                <button type="button" className="btn-secondary" onClick={() => signOut()}>Sign out</button>
-            </div>
+            <div><button type="button" className="btn-secondary" onClick={() => signOut()}>Sign out</button></div>
         </section>
     )
 }
@@ -64,40 +68,6 @@ function DetailsForm({ user, profile, onSaved }) {
             </Field>
             {msg && <p role="status" className="text-sm">{msg}</p>}
             <button type="submit" className="btn-primary" disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>
-        </form>
-    )
-}
-
-function PasswordForm({ updatePassword }) {
-    const [password, setPassword] = useState('')
-    const [msg, setMsg] = useState({ type: '', text: '' })
-    const [busy, setBusy] = useState(false)
-
-    async function submit(e) {
-        e.preventDefault()
-        if (password.length < 8) return setMsg({ type: 'error', text: 'Your password must be at least 8 characters.' })
-        setBusy(true)
-        setMsg({ type: '', text: '' })
-        try {
-            await updatePassword(password)
-            setPassword('')
-            setMsg({ type: 'ok', text: 'Password updated.' })
-        } catch {
-            setMsg({ type: 'error', text: 'We couldn’t update your password. Please try again.' })
-        } finally {
-            setBusy(false)
-        }
-    }
-
-    return (
-        <form onSubmit={submit} noValidate className="space-y-4">
-            <h2 className="text-3xl text-maroon">Change password</h2>
-            <Field id="pr-password" label="New password">
-                <input id="pr-password" type="password" className={input} value={password} autoComplete="new-password"
-                    onChange={(e) => setPassword(e.target.value)} />
-            </Field>
-            {msg.text && <p role={msg.type === 'error' ? 'alert' : 'status'} className={`text-sm ${msg.type === 'error' ? 'text-maroon' : ''}`}>{msg.text}</p>}
-            <button type="submit" className="btn-secondary" disabled={busy}>{busy ? 'Saving…' : 'Update password'}</button>
         </form>
     )
 }

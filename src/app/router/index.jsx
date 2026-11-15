@@ -10,7 +10,6 @@ import ProductDetails from '@/pages/ProductDetails.jsx'
 import NotFound from '@/pages/NotFound.jsx'
 
 const Collections = lazy(() => import('@/pages/Collections.jsx'))
-const About = lazy(() => import('@/pages/About.jsx'))
 const Contact = lazy(() => import('@/pages/Contact.jsx'))
 const PolicyPage = lazy(() => import('@/pages/PolicyPage.jsx'))
 const Cart = lazy(() => import('@/pages/Cart.jsx'))
@@ -46,6 +45,8 @@ const AdminReviews = lazy(() => import('@/pages/admin/AdminReviews.jsx'))
 const AdminCoupons = lazy(() => import('@/pages/admin/AdminCoupons.jsx'))
 const AdminDelivery = lazy(() => import('@/pages/admin/AdminDelivery.jsx'))
 const AdminSettings = lazy(() => import('@/pages/admin/AdminSettings.jsx'))
+const AdminBanners = lazy(() => import('@/pages/admin/AdminBanners.jsx'))
+const AdminPassword = lazy(() => import('@/pages/admin/AdminPassword.jsx'))
 
 const guard = (roles, element) => <RequireRole roles={roles}>{element}</RequireRole>
 
@@ -57,7 +58,7 @@ export default function AppRouter() {
         <Route path="shop" element={<Shop />} />
         <Route path="product/:slug" element={<ProductDetails />} />
         <Route path="collections" element={<Collections />} />
-        <Route path="about" element={<About />} />
+        <Route path="about" element={<PolicyPage slug="about" />} />
         <Route path="contact" element={<Contact />} />
         <Route path="faq" element={<PolicyPage slug="faq" />} />
         <Route path="policies/:slug" element={<PolicyPage />} />
@@ -99,6 +100,8 @@ export default function AppRouter() {
           <Route path="coupons" element={guard(OWNER, <AdminCoupons />)} />
           <Route path="delivery" element={guard(OWNER, <AdminDelivery />)} />
           <Route path="settings" element={guard(OWNER, <AdminSettings />)} />
+          <Route path="banners" element={guard(CATALOG_ROLES, <AdminBanners />)} />
+          <Route path="password" element={<AdminPassword />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

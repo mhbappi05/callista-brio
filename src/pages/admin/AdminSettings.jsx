@@ -6,6 +6,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { getSettings, saveSetting } from '@/services/adminSettingsService'
 
 const POLICIES = [
+    ['policy_about', 'About us', 'Your story: who makes the pieces, how, and what you stand for. It opens from “Read our story” on the Home page. If left blank, a short default is shown.'],
     ['policy_shipping', 'Shipping and delivery', 'Cover: delivery areas, charges, timelines, courier, and what happens if a parcel is delayed or can’t be delivered.'],
     ['policy_returns', 'Returns, exchanges and refunds', 'Cover: who can return, the time limit, item condition, how to request, how and when refunds are paid.'],
     ['policy_privacy', 'Privacy policy', 'Cover: what data you collect and why, who processes it (hosting, couriers, payment providers), how long you keep it, how customers can ask for access or deletion.'],
@@ -51,6 +52,7 @@ function Forms({ s }) {
     const rp = s.return_policy ?? {}
     const [ret, setRet] = useState({ enabled: !!rp.enabled, window_days: rp.window_days == null ? '' : String(rp.window_days) })
     const [policies, setPolicies] = useState(() => Object.fromEntries(POLICIES.map(([key]) => [key, s[key]?.body ?? ''])))
+    const [story, setStory] = useState({ title: s.home_story?.title ?? '', text: s.home_story?.text ?? '' })
 
     return (
         <div className="mt-6 space-y-6">
@@ -94,6 +96,16 @@ function Forms({ s }) {
                 <label className="flex items-center gap-2"><input type="checkbox" checked={ann.enabled} onChange={(e) => setAnn({ ...ann, enabled: e.target.checked })} /> Show the bar</label>
                 <label className="block">Message
                     <input className={inputClass} maxLength={200} value={ann.text} onChange={(e) => setAnn({ ...ann, text: e.target.value })} />
+                </label>
+            </Section>
+
+            <Section title="Home page story" hint="The heading and text beside the “Read our story” button on the Home page. Leave blank to use the default wording."
+                onSave={() => saveSetting('home_story', { title: story.title.trim(), text: story.text.trim() })}>
+                <label className="block">Heading
+                    <input className={inputClass} maxLength={80} value={story.title} onChange={(e) => setStory({ ...story, title: e.target.value })} />
+                </label>
+                <label className="block">Text
+                    <textarea rows={3} maxLength={300} className={inputClass} value={story.text} onChange={(e) => setStory({ ...story, text: e.target.value })} />
                 </label>
             </Section>
 

@@ -12,6 +12,8 @@ const NAV = [
     { to: '/admin/categories', label: 'Categories', roles: CATALOG_ROLES },
     { to: '/admin/collections', label: 'Collections', roles: CATALOG_ROLES },
     { to: '/admin/reviews', label: 'Reviews', roles: CATALOG_ROLES },
+    { to: '/admin/banners', label: 'Home banners', roles: CATALOG_ROLES },
+    { to: '/admin/password', label: 'Password', roles: STAFF },
     { to: '/admin/coupons', label: 'Coupons', roles: OWNER },
     { to: '/admin/delivery', label: 'Delivery zones', roles: OWNER },
     { to: '/admin/settings', label: 'Settings', roles: OWNER },

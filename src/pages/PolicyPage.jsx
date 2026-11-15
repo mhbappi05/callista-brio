@@ -11,6 +11,11 @@ const PAGES = {
     privacy: { key: 'policy_privacy', title: 'Privacy policy' },
     terms: { key: 'policy_terms', title: 'Terms and conditions' },
     faq: { key: 'policy_faq', title: 'Frequently asked questions' },
+    about: {
+        key: 'policy_about',
+        title: 'About us',
+        fallback: 'Callista Brio makes handmade, artsy and cozy jewelry and accessories for the woman who shines. Each piece is made by hand in small batches.',
+    },
 }
 
 export default function PolicyPage({ slug: fixedSlug }) {
@@ -33,7 +38,8 @@ export default function PolicyPage({ slug: fixedSlug }) {
         )
     }
 
-    const blocks = parsePolicy(content.data?.body)
+    const body = content.data?.body?.trim() ? content.data.body : page.fallback
+    const blocks = parsePolicy(body)
     const windowDays = returns.data?.enabled ? returns.data.window_days : null
 
     return (

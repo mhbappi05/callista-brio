@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Search, Heart, ShoppingBag, User, LogOut, Bell, Menu, X } from 'lucide-react'
+import { Search, Heart, ShoppingBag, User, LogOut, Bell, Menu, X, LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
 import { useAsync } from '@/hooks/useAsync'
@@ -24,6 +24,7 @@ export default function Header() {
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const unread = useAsync(() => (user ? countUnread(user.id) : Promise.resolve(0)), [user?.id, pathname])
+  const isStaff = STAFF.includes(profile?.role)
 
   useEffect(() => {
     setMenuOpen(false)
@@ -62,9 +63,6 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center">
-          {STAFF.includes(profile?.role) && (
-            <Link to="/admin" className="px-2 text-sm hover:text-gold">Admin</Link>
-          )}
           <Link to="/shop" className={iconBtn} data-tip="Search the shop" aria-label="Search">
             <Search size={20} />
           </Link>
@@ -83,11 +81,16 @@ export default function Header() {
             <ShoppingBag size={20} />
             {count > 0 && <span key={count} aria-hidden="true" className={badge}>{count}</span>}
           </button>
-          <Link to={user ? '/account/orders' : '/auth'}
-            className={`${iconBtn} ${user ? '' : 'tip-end'}`}
-            data-tip={user ? 'My account' : 'Sign in'} aria-label={user ? 'My account' : 'Sign in'}>
-            <User size={20} />
-          </Link>
+          {isStaff ? (
+            <Link to="/admin" className={`${iconBtn} tip-end`} data-tip="Admin dashboard" aria-label="Admin dashboard">
+              <LayoutDashboard size={20} />
+            </Link>
+          ) : (
+            <Link to={user ? '/account/orders' : '/auth'} className={`${iconBtn} ${user ? '' : 'tip-end'}`}
+              data-tip={user ? 'My account' : 'Sign in'} aria-label={user ? 'My account' : 'Sign in'}>
+              <User size={20} />
+            </Link>
+          )}
           {user && (
             <button type="button" className={`${iconBtn} tip-end hidden sm:block`} data-tip="Sign out"
               aria-label="Sign out" onClick={() => signOut()}>
