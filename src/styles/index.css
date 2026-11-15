@@ -57,6 +57,12 @@
       stroke-dashoffset: 0;
     }
   }
+
+  /* Edge draws its own show-password eye; we provide ours */
+  input[type='password']::-ms-reveal,
+  input[type='password']::-ms-clear {
+    display: none;
+  }
 }
 
 @layer components {
@@ -228,6 +234,17 @@
   .tip-end:hover::after,
   .tip-end:focus-visible::after {
     transform: translate(0, 0);
+  }
+
+  .tip-up::after {
+    top: auto;
+    bottom: calc(100% + 6px);
+    transform: translate(-50%, 4px);
+  }
+
+  .tip-up:hover::after,
+  .tip-up:focus-visible::after {
+    transform: translate(-50%, 0);
   }
 
   /* touch screens have no hover, so don't leave a label stuck after a tap */

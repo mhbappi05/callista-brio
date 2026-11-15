@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import PasswordInput from '@/components/common/PasswordInput.jsx'
 
 export default function ResetPassword() {
   useDocumentTitle('Choose a new password')
@@ -43,9 +44,7 @@ export default function ResetPassword() {
       <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
         <div>
           <label htmlFor="new-password" className="text-sm font-medium">New password</label>
-          <input id="new-password" type="password" autoComplete="new-password"
-            className="mt-1 w-full border border-maroon/30 bg-cream px-3 py-2"
-            value={password} onChange={(e) => setPassword(e.target.value)} />
+          <PasswordInput id="new-password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
         </div>
         {error && <p role="alert" className="text-sm text-maroon">{error}</p>}
         <button type="submit" className="btn-primary w-full" disabled={busy}>{busy ? 'Saving…' : 'Update password'}</button>

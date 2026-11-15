@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import PasswordInput from '@/components/common/PasswordInput.jsx'
 
 const inputClass = 'mt-1 w-full border border-maroon/30 bg-cream px-3 py-2'
 
@@ -81,7 +82,7 @@ export default function Auth() {
         {mode !== 'forgot' && (
           <div>
             <label htmlFor="password" className="text-sm font-medium">Password</label>
-            <input id="password" type="password" className={inputClass} value={form.password} onChange={set('password')}
+            <PasswordInput id="password" value={form.password} onChange={set('password')}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
           </div>
         )}

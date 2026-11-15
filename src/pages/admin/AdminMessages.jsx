@@ -6,6 +6,7 @@ import { useAsync } from '@/hooks/useAsync'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { deleteMessage, listMessages, updateMessage } from '@/services/adminMessageService'
 import { formatDhakaDate } from '@/utils/orderLabels'
+import ReplyButtons from '@/features/admin/ReplyButtons.jsx'
 
 const TABS = [['new', 'New'], ['read', 'Read'], ['replied', 'Replied'], ['archived', 'Archived']]
 
@@ -20,7 +21,6 @@ const MOVES = {
 function MessageCard({ m, canDelete, onChanged }) {
     const action = useAction()
     const [note, setNote] = useState(m.staff_note ?? '')
-    const mailto = `mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.subject}`)}`
 
     async function change(values) {
         const r = await action.run(() => updateMessage(m.id, values))
@@ -50,8 +50,8 @@ function MessageCard({ m, canDelete, onChanged }) {
             </label>
 
             <ErrorLine message={action.error} />
+            <ReplyButtons message={m} />
             <div className="flex flex-wrap items-center gap-2">
-                <a href={mailto} className={`btn-primary ${smallBtn}`}>Reply by email</a>
                 {MOVES[m.status].map(([to, label, primary]) => (
                     <button key={to} type="button" className={`${primary ? 'btn-primary' : 'btn-secondary'} ${smallBtn}`}
                         disabled={action.busy} onClick={() => change({ status: to })}>{label}</button>
