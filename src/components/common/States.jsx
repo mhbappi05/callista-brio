@@ -3,7 +3,7 @@ export function LoadingGrid({ count = 8 }) {
       <ul className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 xl:grid-cols-4" aria-busy="true" aria-label="Loading products">
         {Array.from({ length: count }).map((_, i) => (
           <li key={i} className="animate-pulse">
-            <div className="aspect-square bg-blush" />
+            <div className="aspect-[4/5] bg-blush" />
             <div className="mt-3 h-4 w-3/4 bg-blush" />
             <div className="mt-2 h-4 w-1/3 bg-blush" />
           </li>

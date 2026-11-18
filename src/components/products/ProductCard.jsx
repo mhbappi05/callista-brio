@@ -20,7 +20,7 @@ export default function ProductCard({ product }) {
   return (
     <article className="group float-card float-lift p-2">
       <Link to={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-blush">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-blush">
           <img
             src={productImageUrl(primary?.storage_path)}
             alt={primary?.alt_text || product.name}
